@@ -1,0 +1,94 @@
+# Ignore JetBrains Rider temporary files
+.idea/
+
+# Ignore user-specific IDE settings
+.idea/workspace.xml
+.idea/.ideaenv
+
+# Ignore build output
+**/bin/
+**/obj/
+**/*.dll
+**/*.exe
+
+# Ignore NuGet packages
+packages/
+NuGet/
+*.nupkg
+
+# Ignore ReSharper cache
+_ReSharper*
+
+# Ignore Roslyn analyzers
+_AnalyzerQuotas.cs
+*.roslyn.cache
+
+# Ignore user-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Ignore MSBuild artifacts
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ebugPrivate/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Rr]elease/
+[Rr]eleases/
+mdebug/
+mrelease/
+[Aa]rm/
+[Aa]rm64/
+[Aa]rm32/
+[Aa]rm64/[Ee]mbedded/
+[Aa]rm32/[Ee]mbedded/
+[Aa]rm64/[Pp]rofile/
+[Aa]rm32/[Pp]rofile/
+[Aa]rm64/[Dd]ebug/
+[Aa]rm32/[Dd]ebug/
+[Aa]rm64/[Rr]elease/
+[Aa]rm32/[Rr]elease/
+[Aa]rm64/[Ss]ymbol/
+[Aa]rm32/[Ss]ymbol/
+[Aa]rm64/[Nn]ative/
+[Aa]rm32/[Nn]ative/
+[Aa]rm64/[Uu]wp/
+[Aa]rm32/[Uu]wp/
+[Aa]rm64/[Ii]nterop/
+[Aa]rm32/[Ii]nterop/
+[Aa]rm64/[Ll]ibrary/
+[Aa]rm32/[Ll]ibrary/
+[Aa]rm64/[Vv]ector/
+[Aa]rm32/[Vv]ector/
+[Aa]rm64/[Zz]ero/
+[Aa]rm32/[Zz]ero/
+[Aa]rm64/[Bb]uild/
+[Aa]rm32/[Bb]uild/
+[Aa]rm64/[Qq]uestionable/
+[Aa]rm32/[Qq]uestionable/
+[Aa]rm64/[Tt]emp/
+[Aa]rm32/[Tt]emp/
+[Aa]rm64/[Jj]it/
+[Aa]rm32/[Jj]it/
+
+# Ignore TypeScript npm modules
+/node_modules/
+npm-debug.log
+npm-debug.log*
+yarn.lock
+yarn.lock*
+yarn-error.log
+yarn-error.log*
+
+# Ignore Dart package manager dependencies
+.dart_tool/
+webdev.config.json
+webdev.sync_config.json
+
+# Ignore Flutter instrumented test results
+flutter_test_results.txt
