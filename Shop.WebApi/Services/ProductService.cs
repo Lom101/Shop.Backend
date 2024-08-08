@@ -1,79 +1,62 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using Shop.DTO;
-using Shop.Entities;
-using Shop.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Shop.WebAPI.Dtos.Product.Requests;
+using Shop.WebAPI.Dtos.Product.Responses;
+using Shop.WebAPI.Entities;
+using Shop.WebAPI.Repository.Interfaces;
+using Shop.WebAPI.Services.Interfaces;
 
-namespace Shop.Services
+namespace Shop.WebAPI.Services;
+
+public class ProductService : IProductService
 {
-    public class ProductService : IProductService
+    private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper; // AutoMapper
+
+    public ProductService(IProductRepository productRepository, IMapper mapper)
     {
-        private readonly ShopApplicationContext _context;
-        private readonly IMapper _mapper;
+        _productRepository = productRepository;
+        _mapper = mapper;
+    }
 
-        public ProductService(ShopApplicationContext context, IMapper mapper)
+    public async Task<GetProductResponse> GetProductByIdAsync(int id)
+    {
+        var product = await _productRepository.GetByIdAsync(id);
+        return _mapper.Map<GetProductResponse>(product);
+    }
+
+    public async Task<IEnumerable<GetProductResponse>> GetAllProductsAsync()
+    {
+        var products = await _productRepository.GetAllAsync();
+        return _mapper.Map<IEnumerable<GetProductResponse>>(products);
+    }
+
+    public async Task<int> AddProductAsync(CreateProductRequest productDto)
+    {
+        var product = _mapper.Map<Product>(productDto);
+        await _productRepository.AddAsync(product);
+        return product.Id;
+    }
+
+    public async Task<bool> UpdateProductAsync(UpdateProductRequest productDto)
+    {
+        var product = _mapper.Map<Product>(productDto);
+        var existingProduct = await _productRepository.GetByIdAsync(product.Id);
+        if (existingProduct == null)
         {
-            _context = context;
-            _mapper = mapper;
+            return false; // Продукт не найден
         }
+        await _productRepository.UpdateAsync(product);
+        return true;
+    }
 
-        public async Task<IEnumerable<ProductDTO>> GetAllProductsAsync()
+    public async Task<bool> DeleteProductAsync(int id)
+    {
+        var existingProduct = await _productRepository.GetByIdAsync(id);
+        if (existingProduct == null)
         {
-            var products = await _context.Products.ToListAsync();
-            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+            return false; // Продукт не найден
         }
-
-        public async Task<ProductDTO> GetProductByIdAsync(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return null;
-            }
-
-            return _mapper.Map<ProductDTO>(product);
-        }
-
-        public async Task<ProductDTO> AddProductAsync(ProductDTO productDto)
-        {
-            var product = _mapper.Map<Product>(productDto);
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-            return _mapper.Map<ProductDTO>(product);
-        }
-
-        public async Task UpdateProductAsync(ProductDTO productDto)
-        {
-            var product = await _context.Products.FindAsync(productDto.Id);
-            if (product == null)
-            {
-                throw new KeyNotFoundException("Product not found");
-            }
-
-            _mapper.Map(productDto, product);
-
-            _context.Entry(product).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteProductAsync(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                throw new KeyNotFoundException("Product not found");
-            }
-
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<bool> ProductExistsAsync(int id)
-        {
-            return await _context.Products.AnyAsync(e => e.Id == id);
-        }
+        await _productRepository.DeleteAsync(id);
+        return true;
     }
 }
