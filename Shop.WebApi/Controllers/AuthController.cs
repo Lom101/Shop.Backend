@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Auth;
 using Shop.WebAPI.Dtos.Auth.Request;
@@ -23,8 +25,8 @@ public class AuthController : ControllerBase
         _jwtService = jwtService;
     }
 
-    [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterUserDTO user)
+    [HttpPost("registration")]
+    public async Task<IActionResult> Registration(RegisterUserDTO user)
     {
         if (ModelState.IsValid)
         {
@@ -77,7 +79,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> login(LoginUserDto user)
+    public async Task<IActionResult> Login(LoginUserDTO user)
     {
         if (ModelState.IsValid)
         {
@@ -116,7 +118,7 @@ public class AuthController : ControllerBase
         });
     }
 
-    [HttpPost("refreshtoken")]
+    [HttpPost("refresh_token")]
     public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDTO tokenRequest)
     {
         if (ModelState.IsValid)

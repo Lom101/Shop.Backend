@@ -1,6 +1,9 @@
-﻿namespace Shop.WebAPI.Entities;
+﻿using Shop.WebAPI.Dtos.Category;
+using Shop.WebAPI.Dtos.Comment;
 
-public class Product
+namespace Shop.WebAPI.Dtos.Product;
+
+public class ProductDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
@@ -9,7 +12,7 @@ public class Product
     public int StockQuantity { get; set; }
     public string ImageUrl { get; set; }
     public int CategoryId { get; set; }
-    public Category Category { get; set; }
-
-    public ICollection<Comment> Comments { get; set; }
+    public CategoryDto Category { get; set; }
+    
+    public IEnumerable<CommentDto> Comments { get; set; }
 }

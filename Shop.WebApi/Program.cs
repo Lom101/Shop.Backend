@@ -4,15 +4,30 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Shop;
 using Shop.WebAPI.Config;
 using Shop.WebAPI.Data;
+using Shop.WebAPI.Entities;
 using Shop.WebAPI.Infrastructure.Handlers;
+using Shop.WebAPI.Infrastructure.Mappings;
+using Shop.WebAPI.Repository;
+using Shop.WebAPI.Repository.Interfaces;
 using Shop.WebAPI.SeedData;
 using Shop.WebAPI.Services;
 using Shop.WebAPI.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
@@ -69,6 +84,21 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 #endregion
 
+#region Services and repositories
+
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IProductService, ProductService>();
+builder.Services.AddTransient<IAddressService, AddressService>();
+builder.Services.AddTransient<ICommentService, CommentService>();
+builder.Services.AddTransient<IOrderService, OrderService>();
+
+builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
+builder.Services.AddTransient<IProductRepository, ProductRepository>();
+builder.Services.AddTransient<IAddressRepository, AddressRepository>();
+builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+
+#endregion
 
 var app = builder.Build();
 
@@ -80,6 +110,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// Включаем использование CORS с политикой "AllowReactApp"
+//app.UseCors("AllowReactApp");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

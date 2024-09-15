@@ -1,8 +1,8 @@
 ﻿using Shop.WebAPI.Dtos.Product;
 
-namespace Shop.WebAPI.Dtos.Category;
+namespace Shop.WebAPI.Dtos.Category.Responses;
 
-public class CategoryDto
+public class GetCategoryResponse
 {
     public int Id { get; set; }
     public string Name { get; set; }

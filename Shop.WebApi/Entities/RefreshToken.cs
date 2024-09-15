@@ -15,5 +15,5 @@ public class RefreshToken
     public DateTime ExpiredAt { get; set; }
 
     [ForeignKey(nameof(UserId))]
-    public IdentityUser User { get; set; }
+    public ApplicationUser User { get; set; }
 }
