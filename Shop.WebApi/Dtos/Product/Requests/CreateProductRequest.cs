@@ -8,4 +8,11 @@ public class CreateProductRequest
     public int StockQuantity { get; set; }
     public string ImageUrl { get; set; }
     public int CategoryId { get; set; }
+
+    // Новые свойства
+    public int Size { get; set; } // Размер
+    public string Color { get; set; } // Цвет
+    public int BrandId { get; set; }  // Добавляем бренд
+    public string Material { get; set; } // Материал
+    public bool IsAvailable { get; set; } // Наличие
 }

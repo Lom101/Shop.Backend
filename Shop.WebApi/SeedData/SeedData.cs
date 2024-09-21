@@ -24,6 +24,7 @@ public class SeedData
                 await EnsureRolesExistAsync(roleManager);
                 await EnsureUsersAndRolesExistAsync(userManager, roleManager);
                 await EnsureCategoriesExistAsync(context);
+                await EnsureBrandsExistAsync(context);
                 await EnsureProductsExistAsync(context);
                 await EnsureAddressesExistAsync(context);
                 await EnsureCommentsExistAsync(context);
@@ -39,6 +40,7 @@ public class SeedData
             }
         }
     }
+    
     private static async Task EnsureRolesExistAsync(RoleManager<IdentityRole> roleManager)
     {
         string[] roles = { "Admin", "User" };
@@ -84,43 +86,89 @@ public class SeedData
                 new Category
                 {
                     Id = 1,
-                    Name = "Electronics"
+                    Name = "Men's shoes"
                 },
                 new Category
                 {
                     Id = 2,
-                    Name = "Books"
+                    Name = "Women's shoes"
+                },
+                new Category
+                {
+                    Id = 3,
+                    Name = "Children's shoes"
                 }
             );
             await context.SaveChangesAsync();
         }
     }
+    private static async Task EnsureBrandsExistAsync(ShopApplicationContext context)
+    {
+        if (!context.Brands.Any())
+        {
+            context.Brands.AddRange(
+                new Brand { Name = "Nike" },
+                new Brand { Name = "Adidas" },
+                new Brand { Name = "Puma" }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+
     private static async Task EnsureProductsExistAsync(ShopApplicationContext context)
     {
         if (!context.Products.Any())
         {
-            context.Products.AddRange(
-                new Product
+            var products = new List<Product>();
+
+            var sizes = new[] { 38, 39, 40, 41, 42, 43 }; // Пример доступных размеров
+            var colors = new[] { "Red", "Blue", "Green", "Black", "White" }; // Пример цветов
+            //var brands = new[] { "Nike", "Adidas", "Puma", "Reebok" }; // Пример брендов
+            var materials = new[] { "Leather", "Synthetic", "Mesh" }; // Пример материалов
+
+            for (int i = 1; i <= 25; i++)
+            {
+                products.Add(new Product
                 {
-                    Id = 1,
-                    Name = "Product 1",
-                    Description = "Description for Product 1",
-                    Price = 10.99m,
-                    StockQuantity = 100,
-                    ImageUrl = "https://example.com/product1.jpg",
-                    CategoryId = 1
-                },
-                new Product
+                    Id = i,
+                    Name = $"Shoes {i}",
+                    Description = $"Description for Product {i}",
+                    Price = 10.00m + i, // Логика расчета цены
+                    StockQuantity = 100 - (i % 10), // Пример логики для количества на складе
+                    ImageUrl = $"{i}.jpeg",
+                    CategoryId = 1, // Пример логики для категории
+
+                    // Новые свойства
+                    Size = sizes[i % sizes.Length], // Размер
+                    Color = colors[i % colors.Length], // Цвет
+                    BrandId = 1, // Бренд
+                    Material = materials[i % materials.Length], // Материал
+                    IsAvailable = true // Наличие
+                });
+            }
+
+            for (int i = 26; i <= 50; i++)
+            {
+                products.Add(new Product
                 {
-                    Id = 2,
-                    Name = "Product 2",
-                    Description = "Description for Product 2",
-                    Price = 19.99m,
-                    StockQuantity = 50,
-                    ImageUrl = "https://example.com/product2.jpg",
-                    CategoryId = 2
-                }
-            );
+                    Id = i,
+                    Name = $"Shoes {i}",
+                    Description = $"Description for Product {i}",
+                    Price = 10.00m + i, // Логика расчета цены
+                    StockQuantity = 100 - (i % 10), // Пример логики для количества на складе
+                    ImageUrl = $"{i}.jpeg",
+                    CategoryId = 2, // Пример логики для категории
+
+                    // Новые свойства
+                    Size = sizes[i % sizes.Length], // Размер
+                    Color = colors[i % colors.Length], // Цвет
+                    BrandId = 2, // Бренд
+                    Material = materials[i % materials.Length], // Материал
+                    IsAvailable = true // Наличие
+                });
+            }
+
+            context.Products.AddRange(products);
             await context.SaveChangesAsync();
         }
     }
@@ -211,203 +259,4 @@ public class SeedData
             }
         }
     }
-    
-    // public static async Task ApplyPendingMigrationsAsync(DbContext  _context)
-    // {
-    //     // Получаем список примененных миграций
-    //     var appliedMigrations = await _context.Database.GetAppliedMigrationsAsync();
-    //     
-    //     // Получаем список ожидающих миграций
-    //     var pendingMigrations = await _context.Database.GetPendingMigrationsAsync();
-    //     
-    //     // Если есть ожидающие миграции, применяем их
-    //     if (pendingMigrations.Any())
-    //     {
-    //         Console.WriteLine("Applying pending migrations...");
-    //         await _context.Database.MigrateAsync();
-    //         Console.WriteLine("Migrations applied.");
-    //     }
-    //     else
-    //     {
-    //         Console.WriteLine("No pending migrations to apply.");
-    //     }
-    // }   
-    
-    // public static async Task Initialize(IServiceProvider serviceProvider)
-    // {
-    //     using (var scope = serviceProvider.CreateScope())
-    //     {
-    //         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    //         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    //         var context = scope.ServiceProvider.GetRequiredService<ShopApplicationContext>();
-    //         try
-    //         {
-    //             context.Database.Migrate(); // Применение миграций
-    //         }
-    //         catch (Exception ex)
-    //         {
-    //             // Логирование ошибок при применении миграций
-    //             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-    //             logger.LogError(ex, "An error occurred while migrating the database.");
-    //         }
-    //
-    //         
-    //         // Create roles
-    //         string[] roles = { "Admin", "User" };
-    //         foreach (var role in roles)
-    //         {
-    //             if (!await roleManager.RoleExistsAsync(role))
-    //             {
-    //                 await roleManager.CreateAsync(new IdentityRole(role));
-    //             }
-    //         }
-    //
-    //         // Create admin user
-    //         var adminUser = await userManager.FindByEmailAsync("admin@example.com");
-    //         if (adminUser == null)
-    //         {
-    //             adminUser = new IdentityUser { UserName = "admin", Email = "admin@example.com" };
-    //             await userManager.CreateAsync(adminUser, "Admin@123");
-    //         }
-    //
-    //         // Add user to Admin role
-    //         if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
-    //         {
-    //             await userManager.AddToRoleAsync(adminUser, "Admin");
-    //         }
-    //         
-    //         // Create normal user
-    //         var normalUser = await userManager.FindByEmailAsync("user@example.com");
-    //         if (normalUser == null)
-    //         {
-    //             normalUser = new IdentityUser { UserName = "user", Email = "user@example.com" };
-    //             await userManager.CreateAsync(normalUser, "User@123");
-    //         }
-    //
-    //         // Add user to User role
-    //         if (!await userManager.IsInRoleAsync(normalUser, "User"))
-    //         {
-    //             await userManager.AddToRoleAsync(normalUser, "User");
-    //         }
-    //         
-    //         // Проверка наличия данных в таблице Category
-    //         if (!context.Categories.Any())
-    //         {
-    //             // Если данных нет, добавляем их
-    //             context.Categories.AddRange(
-    //                 new Category
-    //                 {
-    //                     Id = 1,
-    //                     Name = "Electronics"
-    //                 },
-    //                 new Category
-    //                 {
-    //                     Id = 2,
-    //                     Name = "Books"
-    //                 }
-    //             );
-    //             await context.SaveChangesAsync();
-    //         }
-    //         
-    //         // добавление в Product и Проверка наличия данных в таблице Product
-    //         if (!context.Products.Any())
-    //         {
-    //             // Если данных нет, добавляем их
-    //             context.Products.AddRange(
-    //                 new Product
-    //                 {
-    //                     Name = "Product 1",
-    //                     Description = "Description for Product 1",
-    //                     Price = 10.99m,
-    //                     StockQuantity = 100,
-    //                     ImageUrl = "https://example.com/product1.jpg",
-    //                     CategoryId = 1 // Предполагается, что категория с Id = 1 уже существует
-    //                 },
-    //                 new Product
-    //                 {
-    //                     Name = "Product 2",
-    //                     Description = "Description for Product 2",
-    //                     Price = 19.99m,
-    //                     StockQuantity = 50,
-    //                     ImageUrl = "https://example.com/product2.jpg",
-    //                     CategoryId = 2 // Предполагается, что категория с Id = 2 уже существует
-    //                 }
-    //             );
-    //
-    //             await context.SaveChangesAsync();
-    //         }
-    //         
-    //         // Добавление данных для таблицы Address
-    //         if (!context.Addresses.Any())
-    //         {
-    //             context.Addresses.AddRange(
-    //                 new Address
-    //                 {
-    //                     Street = "123 Main St",
-    //                     City = "Anytown",
-    //                     State = "CA",
-    //                     ZipCode = "12345",
-    //                     UserId = normalUser.Id
-    //                 },
-    //                 new Address
-    //                 {
-    //                     Street = "456 Elm Ave",
-    //                     City = "Othertown",
-    //                     State = "NY",
-    //                     ZipCode = "67890",
-    //                     UserId = normalUser.Id
-    //                 }
-    //             );
-    //             await context.SaveChangesAsync();
-    //         }
-    //         
-    //         // Добавление данных для таблицы Comment
-    //         if (!context.Comments.Any())
-    //         {
-    //             context.Comments.AddRange(
-    //                 new Comment
-    //                 {
-    //                     Id = 1,
-    //                     Text = "Great product! Fast shipping!",
-    //                     CreatedAt = DateTime.Now,
-    //                     ProductId = 1,
-    //                     UserId = normalUser.Id
-    //                 },
-    //                 new Comment
-    //                 {
-    //                     Id = 2,
-    //                     Text = "Good price for quality.",
-    //                     CreatedAt = DateTime.Now.AddDays(-7),
-    //                     ProductId = 2,
-    //                     UserId = normalUser.Id
-    //                 }
-    //             );
-    //             await context.SaveChangesAsync();
-    //         }
-    //         
-    //         // Добавление данных для таблицы Order
-    //         if (!context.Orders.Any())
-    //         {
-    //             var orderItems = new List<OrderItem>
-    //             {
-    //                 new OrderItem { ProductId = 1, Quantity = 2, Price = 10.99m },
-    //                 new OrderItem { ProductId = 2, Quantity = 1, Price = 19.99m }
-    //             };
-    //
-    //             context.Orders.AddRange(
-    //                 new Order
-    //                 {
-    //                     Id = 1,
-    //                     UserId = normalUser.Id,
-    //                     OrderDate = DateTime.Now,
-    //                     Status = OrderStatus.Processed,
-    //                     TotalAmount = 39.98m,
-    //                     OrderItems = orderItems
-    //                 }
-    //             );
-    //
-    //             await context.SaveChangesAsync();
-    //         }
-    //     }
-    // }
 }

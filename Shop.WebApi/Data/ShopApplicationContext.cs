@@ -14,6 +14,8 @@ namespace Shop.WebAPI.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        
+        public DbSet<Brand> Brands { get; set; }
 
         public ShopApplicationContext(DbContextOptions<ShopApplicationContext> options)
             : base(options)

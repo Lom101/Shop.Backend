@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Shop.WebAPI.Dtos.Product;
 using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Entities;
@@ -28,6 +29,35 @@ public class ProductService : IProductService
     {
         var products = await _productRepository.GetAllAsync();
         return _mapper.Map<IEnumerable<GetProductResponse>>(products);
+    }
+    
+    public async Task<FilteredPagedProductResponse> GetFilteredPagedProductsAsync(
+        int pageNumber, 
+        int pageSize, 
+        int? categoryId, 
+        int? brandId, 
+        int? size, 
+        string color, 
+        decimal? minPrice, 
+        decimal? maxPrice, 
+        bool? inStock)
+    {
+        // Получаем отфильтрованные данные
+        var products = await _productRepository.GetFilteredProductsAsync(categoryId, brandId, size, color, minPrice, maxPrice, inStock);
+
+        // Пагинация
+        var totalItems = products.Count();
+        var pagedProducts = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    
+        var productDtos = _mapper.Map<List<ProductDto>>(pagedProducts);
+        
+        return new FilteredPagedProductResponse
+        {
+            Products = productDtos,
+            TotalItems = totalItems,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
     }
 
     public async Task<int> AddProductAsync(CreateProductRequest productDto)
@@ -59,4 +89,9 @@ public class ProductService : IProductService
         await _productRepository.DeleteAsync(id);
         return true;
     }
+
+    // public async Task<int> GetTotalCountProductsInCategory(int? categoryId)
+    // {
+    //     return await _productRepository.GetTotalCountProductsInCategory(categoryId);
+    // }
 }

@@ -13,6 +13,14 @@ public class ProductDto
     public string ImageUrl { get; set; }
     public int CategoryId { get; set; }
     public CategoryDto Category { get; set; }
-    
+
     public IEnumerable<CommentDto> Comments { get; set; }
+
+    // Новые свойства
+    public int Size { get; set; } // Размер
+    public string Color { get; set; } // Цвет
+    public int BrandId { get; set; }  // Внешний ключ
+    public string Brand { get; set; } // Бренд
+    public string Material { get; set; } // Материал
+    public bool IsAvailable { get; set; } // Наличие
 }

@@ -3,6 +3,7 @@ using Shop.WebAPI.Dtos;
 using Shop.WebAPI.Dtos.Address;
 using Shop.WebAPI.Dtos.Address.Requests;
 using Shop.WebAPI.Dtos.Address.Responses;
+using Shop.WebAPI.Dtos.Brand;
 using Shop.WebAPI.Dtos.Category;
 using Shop.WebAPI.Dtos.Category.Requests;
 using Shop.WebAPI.Dtos.Category.Responses;
@@ -22,6 +23,11 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
+        // Маппинги для Brand
+        CreateMap<Brand, BrandDto>();
+        CreateMap<BrandDto, Brand>()
+            .ForMember(dest => dest.Products, opt => opt.Ignore());
+        
         // Маппинги для OrderItem
         CreateMap<OrderItem, OrderItemDto>();
         CreateMap<OrderItemDto, OrderItem>();
@@ -104,15 +110,17 @@ public class AutoMapperProfile : Profile
         CreateMap<CreateProductRequest, Product>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Category, opt => opt.Ignore())
-            .ForMember(dest => dest.Comments, opt => opt.Ignore());
+            .ForMember(dest => dest.Comments, opt => opt.Ignore())
+            .ForMember(dest => dest.Brand, opt => opt.Ignore());
+
         CreateMap<UpdateProductRequest, Product>()
             .ForMember(dest => dest.Category, opt => opt.Ignore())
-            .ForMember(dest => dest.Comments, opt => opt.Ignore());
+            .ForMember(dest => dest.Comments, opt => opt.Ignore())
+            .ForMember(dest => dest.Brand, opt => opt.Ignore());
         CreateMap<Product, GetProductResponse>();
         CreateMap<Product, ProductDto>();
-        CreateMap<ProductDto, Product>();
-
-
+        CreateMap<ProductDto, Product>()
+            .ForMember(dest => dest.Brand, opt => opt.Ignore());
     }
 }
 

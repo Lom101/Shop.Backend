@@ -91,12 +91,16 @@ builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IAddressService, AddressService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IBrandService, BrandService>();
+
 
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IAddressRepository, AddressRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
+builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+
 
 #endregion
 
