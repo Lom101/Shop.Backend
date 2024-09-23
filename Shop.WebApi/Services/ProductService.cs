@@ -30,7 +30,28 @@ public class ProductService : IProductService
         var products = await _productRepository.GetAllAsync();
         return _mapper.Map<IEnumerable<GetProductResponse>>(products);
     }
-    
+
+    public async Task<ProductOptionsDto> GetProductOptionsAsync()
+    {
+        var categories = await _productRepository.GetAvailableCategoriesAsync();
+        var brands = await _productRepository.GetAvailableBrandsAsync();
+        var sizes = await _productRepository.GetAvailableSizesAsync();
+        var colors = await _productRepository.GetAvailableColorsAsync();
+        var minPrice = await _productRepository.GetMinPriceAsync();
+        var maxPrice = await _productRepository.GetMaxPriceAsync();
+        
+        return new ProductOptionsDto()
+        {
+            Categories = categories,
+            Brands = brands,
+            Sizes = sizes,
+            Colors = colors,
+            MinPrice = minPrice, // Установи минимальную цену
+            MaxPrice = maxPrice, // Максимальная цена
+            InStock = true // По умолчанию: товар в наличии
+        };
+    }
+
     public async Task<FilteredPagedProductResponse> GetFilteredPagedProductsAsync(
         int pageNumber, 
         int pageSize, 

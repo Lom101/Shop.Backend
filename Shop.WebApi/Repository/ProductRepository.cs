@@ -23,6 +23,53 @@ public class ProductRepository : IProductRepository
     {
         return await _context.Products.ToListAsync();
     }
+    public async Task<decimal> GetMinPriceAsync()
+    {
+        return await _context.Products
+            .MinAsync(p => p.Price);
+    }
+
+    public async Task<decimal> GetMaxPriceAsync()
+    {
+        return await _context.Products
+            .MaxAsync(p => p.Price); // Получаем максимальную цену из товаров
+    }
+    public async Task<List<string>> GetAvailableCategoriesAsync()
+    {
+        return await _context.Categories
+            .Select(c => c.Name)
+            .Distinct()
+            .ToListAsync(); 
+    }
+
+    public async Task<List<string>> GetAvailableBrandsAsync()
+    {
+        return await _context.Brands
+            .Select(b => b.Name)
+            .Distinct()
+            .ToListAsync();
+    }
+
+    public async Task<List<int>> GetAvailableSizesAsync()
+    {
+        // Сначала загружаем все продукты асинхронно
+        var products = await _context.Products
+            .ToListAsync();  // Асинхронный запрос к базе данных для загрузки всех продуктов
+
+        // Выполняем обработку массива размеров в памяти
+        return products
+            .SelectMany(p => p.Sizes)  // Получаем все размеры из каждого продукта
+            .Distinct()  // Убираем дубликаты
+            .ToList();  // Преобразуем результат в список
+    }
+
+    public async Task<List<string>> GetAvailableColorsAsync()
+    {
+        return await _context.Products
+            .Select(p => p.Color)
+            .Distinct()
+            .ToListAsync();
+    }
     
     public async Task<IQueryable<Product>> GetFilteredProductsAsync(
         int? categoryId, 
@@ -50,7 +97,7 @@ public class ProductRepository : IProductRepository
         // // Фильтрация по размеру ////////////////////////// ???????? 
         // if (size.HasValue)
         // {
-        //     query = query.Where(p => p.Size == size.Value);
+        //     query = query.Where(p => p.Sizes == size.Value);
         // }
         
         // Фильтрация по цвету
@@ -99,23 +146,5 @@ public class ProductRepository : IProductRepository
             await _context.SaveChangesAsync();
         }
     }
-
-    // public async Task<int> GetTotalCountProductsInCategory(int? categoryId)
-    // {
-    //     if (categoryId.HasValue)
-    //     {
-    //         var arr = await _context.Products
-    //             .Where(p => p.CategoryId == categoryId)
-    //             .ToListAsync();
-    //         return arr.Count;
-    //     }
-    //     // если категорию не передали, то возвращаем общее количество товаров
-    //     else
-    //     {
-    //         var arr = await _context.Products
-    //             .ToListAsync();
-    //         return arr.Count;
-    //     }
-    // }
 }
 

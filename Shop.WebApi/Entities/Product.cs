@@ -14,9 +14,8 @@ public class Product
     public ICollection<Comment> Comments { get; set; }
 
     // Новые свойства для кроссовок
-    public int Size { get; set; } // Размер
+    public int[] Sizes { get; set; } // все размеры товара
     public string Color { get; set; } // Цвет
-    
     // Бренд
     public int BrandId { get; set; }  // Внешний ключ
     public Brand Brand { get; set; }  // Навигационное свойство

@@ -21,6 +21,15 @@ public class BrandController : ControllerBase
         var brands = await _brandService.GetAllBrandsAsync();
         return Ok(brands); // Возвращаем BrandDto
     }
+    
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetBrandById(int id)
+    {
+        var brand = await _brandService.GetBrandByIdAsync(id);
+        if (brand == null)
+            return NotFound();
+        return Ok(brand);
+    }
 
     [HttpPost]
     public async Task<IActionResult> CreateBrand(CreateBrandRequest request)
@@ -33,7 +42,7 @@ public class BrandController : ControllerBase
     public async Task<IActionResult> UpdateBrand(int id, UpdateBrandRequest request)
     {
         if (id != request.Id)
-            return BadRequest("Id mismatch");
+            return BadRequest("brand ID mismatch");
 
         var updatedBrand = await _brandService.UpdateBrandAsync(request);
         if (updatedBrand == null)

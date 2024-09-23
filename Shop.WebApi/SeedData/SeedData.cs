@@ -83,15 +83,16 @@ public class SeedData
         if (!context.Categories.Any())
         {
             context.Categories.AddRange(
+                
                 new Category
                 {
                     Id = 1,
-                    Name = "Men's shoes"
+                    Name = "Women's shoes"
                 },
                 new Category
                 {
                     Id = 2,
-                    Name = "Women's shoes"
+                    Name = "Men's shoes"
                 },
                 new Category
                 {
@@ -121,7 +122,7 @@ public class SeedData
         {
             var products = new List<Product>();
 
-            var sizes = new[] { 38, 39, 40, 41, 42, 43 }; // Пример доступных размеров
+            var sizes = new int[] { 38, 39, 40, 41, 42, 43 }; // Пример доступных размеров
             var colors = new[] { "Red", "Blue", "Green", "Black", "White" }; // Пример цветов
             //var brands = new[] { "Nike", "Adidas", "Puma", "Reebok" }; // Пример брендов
             var materials = new[] { "Leather", "Synthetic", "Mesh" }; // Пример материалов
@@ -139,7 +140,7 @@ public class SeedData
                     CategoryId = 1, // Пример логики для категории
 
                     // Новые свойства
-                    Size = sizes[i % sizes.Length], // Размер
+                    Sizes = sizes, // Размер
                     Color = colors[i % colors.Length], // Цвет
                     BrandId = 1, // Бренд
                     Material = materials[i % materials.Length], // Материал
@@ -160,7 +161,7 @@ public class SeedData
                     CategoryId = 2, // Пример логики для категории
 
                     // Новые свойства
-                    Size = sizes[i % sizes.Length], // Размер
+                    Sizes = sizes, // Размер
                     Color = colors[i % colors.Length], // Цвет
                     BrandId = 2, // Бренд
                     Material = materials[i % materials.Length], // Материал

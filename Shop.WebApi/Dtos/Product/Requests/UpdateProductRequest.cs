@@ -11,7 +11,7 @@ public class UpdateProductRequest
     public int CategoryId { get; set; }
 
     // Новые свойства
-    public int Size { get; set; } // Размер
+    public int[] Sizes { get; set; } // Массив размеров
     public string Color { get; set; } // Цвет
     public int BrandId { get; set; }  // Добавляем бренд
 

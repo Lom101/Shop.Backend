@@ -15,7 +15,7 @@ public class GetProductResponse
     public CategoryDto Category { get; set; }
 
     // Новые свойства
-    public int Size { get; set; } // Размер
+    public int[] Sizes { get; set; } // Массив размеров
     public string Color { get; set; } // Цвет
     public int BrandId { get; set; }
     public BrandDto Brand { get; set; }  // Добавляем бренд в ответ
