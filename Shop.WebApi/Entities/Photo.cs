@@ -8,5 +8,5 @@ public class Photo
     public long Length { get; set; }
     
     public int ModelId { get; set; }
-    public virtual Model Model { get; set; }
+    public Model Model { get; set; }
 }

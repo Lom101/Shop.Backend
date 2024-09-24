@@ -8,14 +8,14 @@ public class Model
     public double Price { get; set; }
 
     public int ProductId { get; set; }
-    public virtual Product Product { get; set; }
+    public Product Product { get; set; }
     
     public int ColorId { get; set; }
-    public virtual Color Color { get; set; }
+    public Color Color { get; set; }
     
     
-    public virtual ICollection<ModelSize> ModelSizes { get; set; }
-    public virtual ICollection<Photo> Photos { get; set; }
+    public ICollection<ModelSize> ModelSizes { get; set; }
+    public ICollection<Photo> Photos { get; set; }
     
     public Model()
     {

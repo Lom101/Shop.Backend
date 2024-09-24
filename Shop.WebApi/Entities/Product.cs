@@ -15,7 +15,7 @@ public class Product
     public int BrandId { get; set; }
     public Brand Brand { get; set; }
     
-    public virtual ICollection<Model> Models { get; set; }
+    public ICollection<Model> Models { get; set; }
     
     // public Product()
     // {

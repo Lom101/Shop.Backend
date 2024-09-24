@@ -2,6 +2,7 @@
 
 public class ModelSizeDto
 {
+    public int Id { get; set; }
     public int ModelId { get; set; }
     public ModelDto Model { get; set; }
 

@@ -20,17 +20,23 @@ public class SeedData
             {
                 // Применение миграций
                 await context.Database.MigrateAsync();
+                
                 await EnsureRolesExistAsync(roleManager);
                 await EnsureUsersAndRolesExistAsync(userManager, roleManager);
+                
                 await EnsureCategoriesExistAsync(context);
                 await EnsureBrandsExistAsync(context);
                 await EnsureSizeExistAsync(context);
                 await EnsureColorsExistAsync(context);
+                
+                
+                await EnsureProductsExistAsync(context);
+                
                 await EnsureModelsExistAsync(context);
+                
                 await EnsureModelSizesExistAsync(context);
 
                 
-                await EnsureProductsExistAsync(context);
                 
                 await EnsureAddressesExistAsync(context);
                 await EnsureCommentsExistAsync(context);
@@ -145,48 +151,6 @@ public class SeedData
             await context.SaveChangesAsync();
         }
     }
-    private static async Task EnsureModelsExistAsync(ShopApplicationContext context)
-    {
-        if (!context.Models.Any())
-        {
-            context.Models.AddRange(
-                new Model
-                {
-                    ColorId = 1,
-                    ProductId = 1,
-                    Price = 100,
-                },
-                new Model  {
-                    ColorId = 2,
-                    ProductId = 2,
-                    Price = 200,
-                }
-            );
-            await context.SaveChangesAsync();
-        }
-    }
-    private static async Task EnsureModelSizesExistAsync(ShopApplicationContext context)
-    {
-        if (!context.ModelSizes.Any())
-        {
-            context.ModelSizes.AddRange(
-                new ModelSize
-                {
-                    ModelId = 1,
-                    SizeId = 1
-                },
-                new ModelSize  
-                {
-                    ModelId = 1,
-                    SizeId = 1
-                }
-            );
-            await context.SaveChangesAsync();
-        }
-    }
-    
-    
-    
     private static async Task EnsureProductsExistAsync(ShopApplicationContext context)
     {
         if (!context.Products.Any())
@@ -228,6 +192,49 @@ public class SeedData
             await context.SaveChangesAsync();
         }
     }
+
+    private static async Task EnsureModelsExistAsync(ShopApplicationContext context)
+    {
+        if (!context.Models.Any())
+        {
+            context.Models.AddRange(
+                new Model
+                {
+                    ColorId = 1,
+                    ProductId = 1,
+                    Price = 100,
+                },
+                new Model  {
+                    ColorId = 2,
+                    ProductId = 2,
+                    Price = 200,
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+    private static async Task EnsureModelSizesExistAsync(ShopApplicationContext context)
+    {
+        if (!context.ModelSizes.Any())
+        {
+            context.ModelSizes.AddRange(
+                new ModelSize
+                {
+                    ModelId = 1,
+                    SizeId = 1
+                },
+                new ModelSize  
+                {
+                    ModelId = 2,
+                    SizeId = 2
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    
+    
     private static async Task EnsureAddressesExistAsync(ShopApplicationContext context)
     {
         if (!context.Addresses.Any())

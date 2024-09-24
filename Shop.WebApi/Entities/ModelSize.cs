@@ -3,9 +3,11 @@
 // таблица связи многие ко многим
 public class ModelSize
 {
+    public int Id { get; set; }
+    
     public int ModelId { get; set; }
-    public virtual Model Model { get; set; }
+    public Model Model { get; set; }
 
     public int SizeId { get; set; }
-    public virtual Size Size { get; set; }
+    public Size Size { get; set; }
 }

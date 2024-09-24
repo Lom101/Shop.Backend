@@ -11,11 +11,11 @@ public class OrderItem
     public double Amount { get; set; }
     
     public int OrderId { get; set; }
-    public virtual Order Order { get; set; }
+    public Order Order { get; set; }
 
     public int ModelId { get; set; }
-    public virtual Model Model { get; set; }
+    public Model Model { get; set; }
 
     public int SizeId { get; set; }
-    public virtual Size Size { get; set; }
+    public Size Size { get; set; }
 }
