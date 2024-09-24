@@ -31,55 +31,55 @@ public class ProductService : IProductService
         return _mapper.Map<IEnumerable<GetProductResponse>>(products);
     }
 
-    public async Task<ProductOptionsDto> GetProductOptionsAsync()
-    {
-        var categories = await _productRepository.GetAvailableCategoriesAsync();
-        var brands = await _productRepository.GetAvailableBrandsAsync();
-        var sizes = await _productRepository.GetAvailableSizesAsync();
-        var colors = await _productRepository.GetAvailableColorsAsync();
-        var minPrice = await _productRepository.GetMinPriceAsync();
-        var maxPrice = await _productRepository.GetMaxPriceAsync();
-        
-        return new ProductOptionsDto()
-        {
-            Categories = categories,
-            Brands = brands,
-            Sizes = sizes,
-            Colors = colors,
-            MinPrice = minPrice, // Установи минимальную цену
-            MaxPrice = maxPrice, // Максимальная цена
-            InStock = true // По умолчанию: товар в наличии
-        };
-    }
+    // public async Task<ProductOptionsDto> GetProductOptionsAsync()
+    // {
+    //     var categories = await _productRepository.GetAvailableCategoriesAsync();
+    //     var brands = await _productRepository.GetAvailableBrandsAsync();
+    //     var sizes = await _productRepository.GetAvailableSizesAsync();
+    //     var colors = await _productRepository.GetAvailableColorsAsync();
+    //     var minPrice = await _productRepository.GetMinPriceAsync();
+    //     var maxPrice = await _productRepository.GetMaxPriceAsync();
+    //     
+    //     return new ProductOptionsDto()
+    //     {
+    //         Categories = categories,
+    //         Brands = brands,
+    //         Sizes = sizes,
+    //         Colors = colors,
+    //         MinPrice = minPrice, // Установи минимальную цену
+    //         MaxPrice = maxPrice, // Максимальная цена
+    //         InStock = true // По умолчанию: товар в наличии
+    //     };
+    // }
 
-    public async Task<FilteredPagedProductResponse> GetFilteredPagedProductsAsync(
-        int pageNumber, 
-        int pageSize, 
-        int? categoryId, 
-        int? brandId, 
-        int? size, 
-        string color, 
-        decimal? minPrice, 
-        decimal? maxPrice, 
-        bool? inStock)
-    {
-        // Получаем отфильтрованные данные
-        var products = await _productRepository.GetFilteredProductsAsync(categoryId, brandId, size, color, minPrice, maxPrice, inStock);
-
-        // Пагинация
-        var totalItems = products.Count();
-        var pagedProducts = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-    
-        var productDtos = _mapper.Map<List<ProductDto>>(pagedProducts);
-        
-        return new FilteredPagedProductResponse
-        {
-            Products = productDtos,
-            TotalItems = totalItems,
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
-    }
+    // public async Task<FilteredPagedProductResponse> GetFilteredPagedProductsAsync(
+    //     int pageNumber, 
+    //     int pageSize, 
+    //     int? categoryId, 
+    //     int? brandId, 
+    //     int? size, 
+    //     string color, 
+    //     decimal? minPrice, 
+    //     decimal? maxPrice, 
+    //     bool? inStock)
+    // {
+    //     // Получаем отфильтрованные данные
+    //     var products = await _productRepository.GetFilteredProductsAsync(categoryId, brandId, size, color, minPrice, maxPrice, inStock);
+    //
+    //     // Пагинация
+    //     var totalItems = products.Count();
+    //     var pagedProducts = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+    //
+    //     var productDtos = _mapper.Map<List<ProductDto>>(pagedProducts);
+    //     
+    //     return new FilteredPagedProductResponse
+    //     {
+    //         Products = productDtos,
+    //         TotalItems = totalItems,
+    //         PageNumber = pageNumber,
+    //         PageSize = pageSize
+    //     };
+    // }
 
     public async Task<int> AddProductAsync(CreateProductRequest productDto)
     {

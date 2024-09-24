@@ -23,34 +23,38 @@ public class ProductController : ControllerBase
         return Ok(products);
     }
     
-    // Возвращаем все необходимые опции продукта (размеры, цвета и т.д.)
-    // GET: api/products/options
-    [HttpGet("options")]
-    public async Task<IActionResult> GetProductOptionsAsync()
-    {
-        var productOptions = await _productService.GetProductOptionsAsync();
-        return Ok(productOptions);
-    }
     
-    // эндпоинт который возвращает элементы с учетом пагинации (на определенную страницу и определенное количество)
-    // GET: api/products/filteredPagedProducts
-    [HttpGet("filteredPagedProducts")]
-    public async Task<IActionResult> GetFilteredPagedProducts(
-        int pageNumber = 1, 
-        int pageSize = 10, 
-        int? categoryId = null, 
-        int? brandId = null, 
-        int? size = null,
-        string color = null,
-        decimal? minPrice = null, 
-        decimal? maxPrice = null,
-        bool? inStock = null)
-    {
-        var result = await _productService.GetFilteredPagedProductsAsync(pageNumber, pageSize, categoryId, brandId, size, color, minPrice, maxPrice, inStock);
-        return Ok(result);
-    }
+    
+    // // эндпоинт который возвращает элементы с учетом пагинации и фильтрации (на определенную страницу и определенное количество)
+    // // GET: api/products/filteredPagedProducts
+    // [HttpGet("filteredPagedProducts")]
+    // public async Task<IActionResult> GetFilteredPagedProducts(
+    //     int pageNumber = 1, 
+    //     int pageSize = 10, 
+    //     int? categoryId = null, 
+    //     int? brandId = null, 
+    //     int? size = null,
+    //     string color = null,
+    //     decimal? minPrice = null, 
+    //     decimal? maxPrice = null,
+    //     bool? inStock = null)
+    // {
+    //     var result = await _productService.GetFilteredPagedProductsAsync(pageNumber, pageSize, categoryId, brandId, size, color, minPrice, maxPrice, inStock);
+    //     return Ok(result);
+    // }
+    
+    // // Возвращаем все необходимые опции продукта (размеры, цвета и т.д.)
+    // // GET: api/products/options
+    // [HttpGet("options")]
+    // public async Task<IActionResult> GetProductOptionsAsync()
+    // {
+    //     var productOptions = await _productService.GetProductOptionsAsync();
+    //     return Ok(productOptions);
+    // }
+    //
     
     // GET: api/products/{id}
+    
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById(int id)
     {

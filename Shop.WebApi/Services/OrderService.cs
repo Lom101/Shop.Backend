@@ -34,7 +34,7 @@ public class OrderService : IOrderService
     public async Task<int> AddOrderAsync(CreateOrderRequest orderDto)
     {
         var order = _mapper.Map<Order>(orderDto);
-        order.OrderDate = DateTime.UtcNow;
+        order.Created = DateTime.UtcNow;
         order.Status = OrderStatus.Pending; // Пример установки статуса по умолчанию
         await _orderRepository.AddAsync(order);
         return order.Id;

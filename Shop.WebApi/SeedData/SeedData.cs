@@ -20,15 +20,21 @@ public class SeedData
             {
                 // Применение миграций
                 await context.Database.MigrateAsync();
-                //await ApplyPendingMigrationsAsync(context);
                 await EnsureRolesExistAsync(roleManager);
                 await EnsureUsersAndRolesExistAsync(userManager, roleManager);
                 await EnsureCategoriesExistAsync(context);
                 await EnsureBrandsExistAsync(context);
+                await EnsureSizeExistAsync(context);
+                await EnsureColorsExistAsync(context);
+                await EnsureModelsExistAsync(context);
+                await EnsureModelSizesExistAsync(context);
+
+                
                 await EnsureProductsExistAsync(context);
+                
                 await EnsureAddressesExistAsync(context);
                 await EnsureCommentsExistAsync(context);
-                await EnsureOrdersExistAsync(context);
+                //await EnsureOrdersExistAsync(context);
 
                 await context.SaveChangesAsync();
             }
@@ -115,17 +121,82 @@ public class SeedData
             await context.SaveChangesAsync();
         }
     }
-
+    private static async Task EnsureSizeExistAsync(ShopApplicationContext context)
+    {
+        if (!context.Sizes.Any())
+        {
+            context.Sizes.AddRange(
+                new Size { Name = "38" },
+                new Size { Name = "39" },
+                new Size { Name = "40" }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+    private static async Task EnsureColorsExistAsync(ShopApplicationContext context)
+    {
+        if (!context.Colors.Any())
+        {
+            context.Colors.AddRange(
+                new Color { Name = "Black" },
+                new Color { Name = "White" },
+                new Color { Name = "Blue" }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+    private static async Task EnsureModelsExistAsync(ShopApplicationContext context)
+    {
+        if (!context.Models.Any())
+        {
+            context.Models.AddRange(
+                new Model
+                {
+                    ColorId = 1,
+                    ProductId = 1,
+                    Price = 100,
+                },
+                new Model  {
+                    ColorId = 2,
+                    ProductId = 2,
+                    Price = 200,
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+    private static async Task EnsureModelSizesExistAsync(ShopApplicationContext context)
+    {
+        if (!context.ModelSizes.Any())
+        {
+            context.ModelSizes.AddRange(
+                new ModelSize
+                {
+                    ModelId = 1,
+                    SizeId = 1
+                },
+                new ModelSize  
+                {
+                    ModelId = 1,
+                    SizeId = 1
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+    
+    
+    
     private static async Task EnsureProductsExistAsync(ShopApplicationContext context)
     {
         if (!context.Products.Any())
         {
             var products = new List<Product>();
-
-            var sizes = new int[] { 38, 39, 40, 41, 42, 43 }; // Пример доступных размеров
-            var colors = new[] { "Red", "Blue", "Green", "Black", "White" }; // Пример цветов
-            //var brands = new[] { "Nike", "Adidas", "Puma", "Reebok" }; // Пример брендов
-            var materials = new[] { "Leather", "Synthetic", "Mesh" }; // Пример материалов
+            
+            // var sizes = new int[] { 38, 39, 40, 41, 42, 43 }; // Пример доступных размеров
+            // var colors = new[] { "Red", "Blue", "Green", "Black", "White" }; // Пример цветов
+            // var brands = new[] { "Nike", "Adidas", "Puma", "Reebok" }; // Пример брендов
+            // var materials = new[] { "Leather", "Synthetic", "Mesh" }; // Пример материалов
 
             for (int i = 1; i <= 25; i++)
             {
@@ -134,17 +205,9 @@ public class SeedData
                     Id = i,
                     Name = $"Shoes {i}",
                     Description = $"Description for Product {i}",
-                    Price = 10.00m + i, // Логика расчета цены
-                    StockQuantity = 100 - (i % 10), // Пример логики для количества на складе
-                    ImageUrl = $"{i}.jpeg",
-                    CategoryId = 1, // Пример логики для категории
-
-                    // Новые свойства
-                    Sizes = sizes, // Размер
-                    Color = colors[i % colors.Length], // Цвет
-                    BrandId = 1, // Бренд
-                    Material = materials[i % materials.Length], // Материал
-                    IsAvailable = true // Наличие
+                    CategoryId = 1, 
+                    BrandId = 1,
+                    Created = DateTime.UtcNow
                 });
             }
 
@@ -155,17 +218,9 @@ public class SeedData
                     Id = i,
                     Name = $"Shoes {i}",
                     Description = $"Description for Product {i}",
-                    Price = 10.00m + i, // Логика расчета цены
-                    StockQuantity = 100 - (i % 10), // Пример логики для количества на складе
-                    ImageUrl = $"{i}.jpeg",
-                    CategoryId = 2, // Пример логики для категории
-
-                    // Новые свойства
-                    Sizes = sizes, // Размер
-                    Color = colors[i % colors.Length], // Цвет
-                    BrandId = 2, // Бренд
-                    Material = materials[i % materials.Length], // Материал
-                    IsAvailable = true // Наличие
+                    CategoryId = 2,
+                    BrandId = 2, 
+                    Created = DateTime.UtcNow
                 });
             }
 
@@ -205,7 +260,6 @@ public class SeedData
     {
         if (!context.Comments.Any())
         {
-            var products = await context.Products.ToListAsync();
             var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
 
             context.Comments.AddRange(
@@ -213,51 +267,53 @@ public class SeedData
                 {
                     Id = 1,
                     Text = "Great product! Fast shipping!",
-                    CreatedAt = DateTime.UtcNow,
-                    ProductId = products[0].Id,
+                    Created = DateTime.UtcNow,
+                    ProductId = 1,
                     UserId = user.Id
                 },
                 new Comment
                 {
                     Id = 2,
                     Text = "Good price for quality.",   
-                    CreatedAt = DateTime.UtcNow.AddDays(-7),
-                    ProductId = products[^1].Id, // Последний продукт
+                    Created = DateTime.UtcNow.AddDays(-7),
+                    ProductId = 2,
                     UserId = user.Id
                 }
             );
             await context.SaveChangesAsync();
         }
     }
-    private static async Task EnsureOrdersExistAsync(ShopApplicationContext context)
-    {
-        if (!context.Orders.Any())
-        {
-            var products = await context.Products.ToListAsync();
-            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
 
-            if (products.Count >= 2 && user != null)
-            {
-                var orderItems = new List<OrderItem>
-                {
-                    new OrderItem { ProductId = products[0].Id, Quantity = 2, UnitPrice = products[0].Price },
-                    new OrderItem { ProductId = products[^1].Id, Quantity = 1, UnitPrice = products[^1].Price }
-                };
-
-                context.Orders.Add(
-                    new Order
-                    {
-                        Id = 1,
-                        UserId = user.Id,
-                        OrderDate = DateTime.UtcNow,
-                        Status = OrderStatus.Processed,
-                        TotalAmount = orderItems.Sum(oi => oi.Quantity * oi.UnitPrice),
-                        OrderItems = orderItems
-                    }
-                );
-
-                await context.SaveChangesAsync();
-            }
-        }
-    }
+    
+    // private static async Task EnsureOrdersExistAsync(ShopApplicationContext context)
+    // {
+    //     if (!context.Orders.Any())
+    //     {
+    //         var products = await context.Products.ToListAsync();
+    //         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
+    //
+    //         if (products.Count >= 2 && user != null)
+    //         {
+    //             var orderItems = new List<OrderItem>
+    //             {
+    //                 new OrderItem { ProductId = 1, Quantity = 2, UnitPrice = products[0].Price },
+    //                 new OrderItem { ProductId = 1, Quantity = 1, UnitPrice = products[^1].Price }
+    //             };
+    //
+    //             context.Orders.Add(
+    //                 new Order
+    //                 {
+    //                     Id = 1,
+    //                     UserId = user.Id,
+    //                     Created = DateTime.UtcNow,
+    //                     Status = OrderStatus.Processed,
+    //                     TotalAmount = orderItems.Sum(oi => oi.Quantity * oi.Amount),
+    //                     OrderItems = orderItems
+    //                 }
+    //             );
+    //
+    //             await context.SaveChangesAsync();
+    //         }
+    //     }
+    // }
 }

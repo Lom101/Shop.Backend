@@ -11,11 +11,15 @@ namespace Shop.WebAPI.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
-
+        
         public DbSet<Category> Categories { get; set; }
         public DbSet<Address> Addresses { get; set; }
-        
         public DbSet<Brand> Brands { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+        public DbSet<Model> Models { get; set; } 
+        
+        public DbSet<ModelSize> ModelSizes { get; set; } // в референс не был прописан
 
         public ShopApplicationContext(DbContextOptions<ShopApplicationContext> options)
             : base(options)
@@ -26,25 +30,6 @@ namespace Shop.WebAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // modelBuilder.Entity<Order>()
-            //     .HasOne(o => o.User)
-            //     .WithMany(u => u.Orders)
-            //     .HasForeignKey(o => o.UserId);
-            //
-            // modelBuilder.Entity<Product>()
-            //     .HasOne(p => p.Category)
-            //     .WithMany(c => c.Products)
-            //     .HasForeignKey(p => p.CategoryId);
-            //
-            // modelBuilder.Entity<Comment>()
-            //     .HasOne(c => c.Product)
-            //     .WithMany(p => p.Comments)  
-            //     .HasForeignKey(c => c.ProductId);
-            //
-            // modelBuilder.Entity<Comment>()
-            //     .HasOne(c => c.User)
-            //     .WithMany(u => u.Comments)
-            //     .HasForeignKey(c => c.UserId);
         }
     }
 }

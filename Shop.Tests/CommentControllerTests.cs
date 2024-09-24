@@ -29,8 +29,8 @@ namespace Shop.Tests
             // Arrange
             var mockComments = new List<GetCommentResponse>
             {
-                new GetCommentResponse { Id = 1, Text = "Great product!", CreatedAt = DateTime.UtcNow, ProductId = 1, UserId = "user1" },
-                new GetCommentResponse { Id = 2, Text = "Not bad", CreatedAt = DateTime.UtcNow, ProductId = 2, UserId = "user2" }
+                new GetCommentResponse { Id = 1, Text = "Great product!", Created = DateTime.UtcNow, ProductId = 1, UserId = "user1" },
+                new GetCommentResponse { Id = 2, Text = "Not bad", Created = DateTime.UtcNow, ProductId = 2, UserId = "user2" }
             };
             _mockCommentService.Setup(s => s.GetAllCommentsAsync())
                 .ReturnsAsync(mockComments);
@@ -48,7 +48,7 @@ namespace Shop.Tests
         public async Task GetCommentById_ShouldReturnOkResult_WithComment()
         {
             // Arrange
-            var mockComment = new GetCommentResponse { Id = 1, Text = "Great product!", CreatedAt = DateTime.UtcNow, ProductId = 1, UserId = "user1" };
+            var mockComment = new GetCommentResponse { Id = 1, Text = "Great product!", Created = DateTime.UtcNow, ProductId = 1, UserId = "user1" };
             _mockCommentService.Setup(s => s.GetCommentByIdAsync(1))
                 .ReturnsAsync(mockComment);
 

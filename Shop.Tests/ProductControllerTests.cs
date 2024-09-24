@@ -5,6 +5,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Shop.WebAPI.Controllers;
+using Shop.WebAPI.Dtos;
+using Shop.WebAPI.Dtos.Brand;
+using Shop.WebAPI.Dtos.Category;
 using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Services.Interfaces;
@@ -29,8 +32,30 @@ namespace Shop.Tests
             // Arrange
             var mockProducts = new List<GetProductResponse>
             {
-                new GetProductResponse { Id = 1, Name = "Product 1", Description = "Description 1", Price = 10.00m, StockQuantity = 100, ImageUrl = "http://example.com/image1.jpg", CategoryId = 1 },
-                new GetProductResponse { Id = 2, Name = "Product 2", Description = "Description 2", Price = 20.00m, StockQuantity = 200, ImageUrl = "http://example.com/image2.jpg", CategoryId = 2 }
+                new GetProductResponse 
+                { 
+                    Id = 1, 
+                    Name = "Product 1", 
+                    Description = "Description 1", 
+                    Created = DateTime.Now,
+                    CategoryId = 1, 
+                    Category = new CategoryDto { Id = 1, Name = "Category 1" },
+                    BrandId = 1, 
+                    Brand = new BrandDto { Id = 1, Name = "Brand 1" },
+                    Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
+                },
+                new GetProductResponse 
+                { 
+                    Id = 2, 
+                    Name = "Product 2", 
+                    Description = "Description 2", 
+                    Created = DateTime.Now,
+                    CategoryId = 2, 
+                    Category = new CategoryDto { Id = 2, Name = "Category 2" },
+                    BrandId = 2, 
+                    Brand = new BrandDto { Id = 2, Name = "Brand 2" },
+                    Models = new List<ModelDto> { new ModelDto { Id = 2, Price = 20 } }
+                }
             };
             _mockProductService.Setup(s => s.GetAllProductsAsync())
                 .ReturnsAsync(mockProducts);
@@ -44,6 +69,7 @@ namespace Shop.Tests
             products.Should().HaveCount(2);
         }
 
+
         [Fact]
         public async Task GetProductById_ShouldReturnOkResult_WithProduct()
         {
@@ -53,10 +79,12 @@ namespace Shop.Tests
                 Id = 1,
                 Name = "Product 1",
                 Description = "Description 1",
-                Price = 10.00m,
-                StockQuantity = 100,
-                ImageUrl = "http://example.com/image1.jpg",
-                CategoryId = 1
+                Created = DateTime.Now,
+                CategoryId = 1,
+                Category = new CategoryDto { Id = 1, Name = "Category 1" },
+                BrandId = 1,
+                Brand = new BrandDto { Id = 1, Name = "Brand 1" },
+                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10} }
             };
             _mockProductService.Setup(s => s.GetProductByIdAsync(1))
                 .ReturnsAsync(mockProduct);
@@ -69,6 +97,35 @@ namespace Shop.Tests
             var product = okResult.Value.Should().BeAssignableTo<GetProductResponse>().Subject;
             product.Id.Should().Be(1);
             product.Name.Should().Be("Product 1");
+            product.Brand.Name.Should().Be("Brand 1");  
+            product.Category.Name.Should().Be("Category 1");
+            product.Models.Should().HaveCount(1);
+        }
+
+        
+        [Fact]
+        public async Task AddProduct_ShouldReturnCreatedAtActionResult()
+        {
+            // Arrange
+            var createProductRequest = new CreateProductRequest
+            {
+                Name = "Product 1",
+                Description = "Description 1",
+                Created = DateTime.Now,
+                CategoryId = 1,
+                BrandId = 1,
+                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
+            };
+            _mockProductService.Setup(s => s.AddProductAsync(createProductRequest))
+                .ReturnsAsync(1);
+
+            // Act
+            var result = await _controller.AddProduct(createProductRequest);
+
+            // Assert
+            var createdResult = result.Should().BeOfType<CreatedAtActionResult>().Subject;
+            createdResult.ActionName.Should().Be(nameof(_controller.GetProductById));
+            createdResult.RouteValues?["id"].Should().Be(1);
         }
 
         [Fact]
@@ -85,30 +142,6 @@ namespace Shop.Tests
             result.Should().BeOfType<NotFoundResult>();
         }
 
-        [Fact]
-        public async Task AddProduct_ShouldReturnCreatedAtActionResult()
-        {
-            // Arrange
-            var createProductRequest = new CreateProductRequest
-            {
-                Name = "Product 1",
-                Description = "Description 1",
-                Price = 10.00m,
-                StockQuantity = 100,
-                ImageUrl = "http://example.com/image1.jpg",
-                CategoryId = 1
-            };
-            _mockProductService.Setup(s => s.AddProductAsync(createProductRequest))
-                .ReturnsAsync(1);
-
-            // Act
-            var result = await _controller.AddProduct(createProductRequest);
-
-            // Assert
-            var createdResult = result.Should().BeOfType<CreatedAtActionResult>().Subject;
-            createdResult.ActionName.Should().Be(nameof(_controller.GetProductById));
-            createdResult.RouteValues["id"].Should().Be(1);
-        }
 
         [Fact]
         public async Task UpdateProduct_ShouldReturnNoContent_WhenUpdateIsSuccessful()
@@ -119,10 +152,10 @@ namespace Shop.Tests
                 Id = 1,
                 Name = "Updated Product",
                 Description = "Updated Description",
-                Price = 15.00m,
-                StockQuantity = 150,
-                ImageUrl = "http://example.com/updated_image.jpg",
-                CategoryId = 2
+                Created = DateTime.Now,
+                CategoryId = 2,
+                BrandId = 2,
+                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
             };
             _mockProductService.Setup(s => s.UpdateProductAsync(updateProductRequest))
                 .ReturnsAsync(true);
@@ -143,10 +176,10 @@ namespace Shop.Tests
                 Id = 1,
                 Name = "Updated Product",
                 Description = "Updated Description",
-                Price = 15.00m,
-                StockQuantity = 150,
-                ImageUrl = "http://example.com/updated_image.jpg",
-                CategoryId = 2
+                Created = DateTime.Now,
+                CategoryId = 2,
+                BrandId = 1,
+                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
             };
             _mockProductService.Setup(s => s.UpdateProductAsync(updateProductRequest))
                 .ReturnsAsync(false);
@@ -167,10 +200,10 @@ namespace Shop.Tests
                 Id = 2,
                 Name = "Updated Product",
                 Description = "Updated Description",
-                Price = 15.00m,
-                StockQuantity = 150,
-                ImageUrl = "http://example.com/updated_image.jpg",
-                CategoryId = 2
+                Created = DateTime.Now,
+                CategoryId = 2,
+                BrandId = 1,
+                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
             };
 
             // Act
@@ -180,6 +213,7 @@ namespace Shop.Tests
             result.Should().BeOfType<BadRequestObjectResult>()
                 .Which.Value.Should().Be("product ID mismatch");
         }
+
 
         [Fact]
         public async Task DeleteProduct_ShouldReturnNoContent_WhenDeleteIsSuccessful()

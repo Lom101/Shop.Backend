@@ -30,8 +30,8 @@ namespace Shop.Tests
             // Arrange
             var mockOrders = new List<GetOrderResponse>
             {
-                new GetOrderResponse { Id = 1, UserId = "user1", OrderDate = DateTime.UtcNow, Status = OrderStatus.Pending.ToString(), TotalAmount = 100.00m },
-                new GetOrderResponse { Id = 2, UserId = "user2", OrderDate = DateTime.UtcNow, Status = OrderStatus.Shipped.ToString(), TotalAmount = 200.00m }
+                new GetOrderResponse { Id = 1, UserId = "user1", Created = DateTime.UtcNow, Status = OrderStatus.Pending, TotalAmount = 100.00m },
+                new GetOrderResponse { Id = 2, UserId = "user2", Created = DateTime.UtcNow, Status = OrderStatus.Shipped, TotalAmount = 200.00m }
             };
             _mockOrderService.Setup(s => s.GetAllOrdersAsync())
                 .ReturnsAsync(mockOrders);
@@ -53,8 +53,8 @@ namespace Shop.Tests
             { 
                 Id = 1, 
                 UserId = "user1", 
-                OrderDate = DateTime.UtcNow, 
-                Status = OrderStatus.Pending.ToString(), 
+                Created = DateTime.UtcNow, 
+                Status = OrderStatus.Pending, 
                 TotalAmount = 100.00m 
             };
             _mockOrderService.Setup(s => s.GetOrderByIdAsync(1))
@@ -91,7 +91,7 @@ namespace Shop.Tests
             var createOrderRequest = new CreateOrderRequest 
             { 
                 UserId = "user1", 
-                OrderDate = DateTime.UtcNow, 
+                Created = DateTime.UtcNow, 
                 Status = OrderStatus.Pending, 
                 TotalAmount = 100.00m 
             };
@@ -115,7 +115,7 @@ namespace Shop.Tests
             { 
                 Id = 1, 
                 UserId = "user1", 
-                OrderDate = DateTime.UtcNow, 
+                Created = DateTime.UtcNow, 
                 Status = OrderStatus.Shipped, 
                 TotalAmount = 150.00m 
             };
@@ -137,7 +137,7 @@ namespace Shop.Tests
             { 
                 Id = 1, 
                 UserId = "user1", 
-                OrderDate = DateTime.UtcNow, 
+                Created = DateTime.UtcNow, 
                 Status = OrderStatus.Shipped, 
                 TotalAmount = 150.00m 
             };
@@ -159,7 +159,7 @@ namespace Shop.Tests
             { 
                 Id = 2, 
                 UserId = "user1", 
-                OrderDate = DateTime.UtcNow, 
+                Created = DateTime.UtcNow, 
                 Status = OrderStatus.Shipped, 
                 TotalAmount = 150.00m 
             };

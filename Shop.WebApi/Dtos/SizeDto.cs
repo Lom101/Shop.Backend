@@ -1,6 +1,6 @@
-﻿namespace Shop.WebAPI.Entities;
+﻿namespace Shop.WebAPI.Dtos;
 
-public class Brand
+public class SizeDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
