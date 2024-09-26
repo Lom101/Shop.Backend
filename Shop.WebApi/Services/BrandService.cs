@@ -20,10 +20,10 @@ public class BrandService : IBrandService
     }
 
     // Получение всех брендов
-    public async Task<IEnumerable<BrandDto>> GetAllBrandsAsync()
+    public async Task<IEnumerable<GetBrandResponse>> GetAllBrandsAsync()
     {
         var brands = await _brandRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<BrandDto>>(brands); // Маппинг через AutoMapper
+        return _mapper.Map<IEnumerable<GetBrandResponse>>(brands); // Маппинг через AutoMapper
     }
 
     // Получение бренда по ID
@@ -38,16 +38,16 @@ public class BrandService : IBrandService
     }
 
     // Создание нового бренда
-    public async Task<BrandDto> CreateBrandAsync(CreateBrandRequest request)
+    public async Task<GetBrandResponse> AddBrandAsync(CreateBrandRequest request)
     {
         var brand = _mapper.Map<Brand>(request); // Маппинг из CreateBrandRequest в Brand
         
         await _brandRepository.AddAsync(brand);
-        return _mapper.Map<BrandDto>(brand); // Маппинг из Brand в BrandDto
+        return _mapper.Map<GetBrandResponse>(brand); // Маппинг из Brand в GetBrandResponse
     }
 
     // Обновление существующего бренда
-    public async Task<BrandDto> UpdateBrandAsync(UpdateBrandRequest request)
+    public async Task<GetBrandResponse> UpdateBrandAsync(UpdateBrandRequest request)
     {
         var brand = await _brandRepository.GetByIdAsync(request.Id);
         if (brand == null)
@@ -56,7 +56,7 @@ public class BrandService : IBrandService
         _mapper.Map(request, brand); // Маппинг изменений из UpdateBrandRequest в существующий Brand
 
         await _brandRepository.UpdateAsync(brand);
-        return _mapper.Map<BrandDto>(brand); // Маппинг обновленного Brand в BrandDto
+        return _mapper.Map<GetBrandResponse>(brand); // Маппинг обновленного Brand в GetBrandResponse
     }
 
     // Удаление бренда

@@ -7,7 +7,10 @@ using Moq;
 using Shop.WebAPI.Controllers;
 using Shop.WebAPI.Dtos;
 using Shop.WebAPI.Dtos.Brand;
+using Shop.WebAPI.Dtos.Brand.Response;
 using Shop.WebAPI.Dtos.Category;
+using Shop.WebAPI.Dtos.Category.Responses;
+using Shop.WebAPI.Dtos.Model.Response;
 using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Services.Interfaces;
@@ -39,10 +42,7 @@ namespace Shop.Tests
                     Description = "Description 1", 
                     Created = DateTime.Now,
                     CategoryId = 1, 
-                    Category = new CategoryDto { Id = 1, Name = "Category 1" },
                     BrandId = 1, 
-                    Brand = new BrandDto { Id = 1, Name = "Brand 1" },
-                    Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
                 },
                 new GetProductResponse 
                 { 
@@ -51,10 +51,7 @@ namespace Shop.Tests
                     Description = "Description 2", 
                     Created = DateTime.Now,
                     CategoryId = 2, 
-                    Category = new CategoryDto { Id = 2, Name = "Category 2" },
                     BrandId = 2, 
-                    Brand = new BrandDto { Id = 2, Name = "Brand 2" },
-                    Models = new List<ModelDto> { new ModelDto { Id = 2, Price = 20 } }
                 }
             };
             _mockProductService.Setup(s => s.GetAllProductsAsync())
@@ -81,10 +78,10 @@ namespace Shop.Tests
                 Description = "Description 1",
                 Created = DateTime.Now,
                 CategoryId = 1,
-                Category = new CategoryDto { Id = 1, Name = "Category 1" },
+                Category = new GetCategoryResponse() {Name = "Category 1"},
                 BrandId = 1,
-                Brand = new BrandDto { Id = 1, Name = "Brand 1" },
-                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10} }
+                Brand = new GetBrandResponse() {Name = "Brand 1"},
+                Models = new List<GetModelResponse>(){ new GetModelResponse(){ Price = 10}},
             };
             _mockProductService.Setup(s => s.GetProductByIdAsync(1))
                 .ReturnsAsync(mockProduct);
@@ -113,8 +110,7 @@ namespace Shop.Tests
                 Description = "Description 1",
                 Created = DateTime.Now,
                 CategoryId = 1,
-                BrandId = 1,
-                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
+                BrandId = 1
             };
             _mockProductService.Setup(s => s.AddProductAsync(createProductRequest))
                 .ReturnsAsync(1);
@@ -154,8 +150,7 @@ namespace Shop.Tests
                 Description = "Updated Description",
                 Created = DateTime.Now,
                 CategoryId = 2,
-                BrandId = 2,
-                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
+                BrandId = 2
             };
             _mockProductService.Setup(s => s.UpdateProductAsync(updateProductRequest))
                 .ReturnsAsync(true);
@@ -178,8 +173,7 @@ namespace Shop.Tests
                 Description = "Updated Description",
                 Created = DateTime.Now,
                 CategoryId = 2,
-                BrandId = 1,
-                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
+                BrandId = 1
             };
             _mockProductService.Setup(s => s.UpdateProductAsync(updateProductRequest))
                 .ReturnsAsync(false);
@@ -202,8 +196,7 @@ namespace Shop.Tests
                 Description = "Updated Description",
                 Created = DateTime.Now,
                 CategoryId = 2,
-                BrandId = 1,
-                Models = new List<ModelDto> { new ModelDto { Id = 1, Price = 10 } }
+                BrandId = 1
             };
 
             // Act

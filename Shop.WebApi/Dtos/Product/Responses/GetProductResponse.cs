@@ -1,5 +1,8 @@
 ﻿using Shop.WebAPI.Dtos.Brand;
+using Shop.WebAPI.Dtos.Brand.Response;
 using Shop.WebAPI.Dtos.Category;
+using Shop.WebAPI.Dtos.Category.Responses;
+using Shop.WebAPI.Dtos.Model.Response;
 
 namespace Shop.WebAPI.Dtos.Product.Responses;
 
@@ -11,10 +14,10 @@ public class GetProductResponse
     public DateTime Created { get; set; }
     
     public int CategoryId { get; set; }
-    public CategoryDto Category { get; set; }
+    public GetCategoryResponse Category { get; set; }
     
     public int BrandId { get; set; }
-    public BrandDto Brand { get; set; }
+    public GetBrandResponse Brand { get; set; }
     
-    public ICollection<ModelDto> Models { get; set; }
+    public ICollection<GetModelResponse> Models { get; set; }
 }

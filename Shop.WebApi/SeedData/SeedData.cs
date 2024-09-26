@@ -20,27 +20,25 @@ public class SeedData
             {
                 // Применение миграций
                 await context.Database.MigrateAsync();
-                
+
                 await EnsureRolesExistAsync(roleManager);
                 await EnsureUsersAndRolesExistAsync(userManager, roleManager);
-                
+
                 await EnsureCategoriesExistAsync(context);
                 await EnsureBrandsExistAsync(context);
                 await EnsureSizeExistAsync(context);
                 await EnsureColorsExistAsync(context);
-                
-                
-                await EnsureProductsExistAsync(context);
-                
-                await EnsureModelsExistAsync(context);
-                
-                await EnsureModelSizesExistAsync(context);
 
-                
-                
+                await EnsureProductsExistAsync(context);
+                await EnsureModelsExistAsync(context);
+                await EnsureModelSizesExistAsync(context);
+                await EnsurePhotosExistAsync(context); // Добавляем фото
+
                 await EnsureAddressesExistAsync(context);
                 await EnsureCommentsExistAsync(context);
-                //await EnsureOrdersExistAsync(context);
+
+                // Добавление заказов
+                await EnsureOrdersExistAsync(context); 
 
                 await context.SaveChangesAsync();
             }
@@ -52,7 +50,7 @@ public class SeedData
             }
         }
     }
-    
+
     private static async Task EnsureRolesExistAsync(RoleManager<IdentityRole> roleManager)
     {
         string[] roles = { "Admin", "User" };
@@ -203,16 +201,67 @@ public class SeedData
                     ColorId = 1,
                     ProductId = 1,
                     Price = 100,
+                    Photos = new List<Photo> // Добавляем фото для модели
+                    {
+                        new Photo
+                        {
+                            FileName = "model1-photo1.jpg",
+                            FilePath = "/images/model1-photo1.jpg",
+                            Length = 2048
+                        },
+                        new Photo
+                        {
+                            FileName = "model1-photo2.jpg",
+                            FilePath = "/images/model1-photo2.jpg",
+                            Length = 2048
+                        }
+                    }
                 },
-                new Model  {
+                new Model
+                {
                     ColorId = 2,
                     ProductId = 2,
                     Price = 200,
+                    Photos = new List<Photo> // Добавляем фото для модели
+                    {
+                        new Photo
+                        {
+                            FileName = "model2-photo1.jpg",
+                            FilePath = "/images/model2-photo1.jpg",
+                            Length = 1024
+                        }
+                    }
                 }
             );
             await context.SaveChangesAsync();
         }
     }
+
+    private static async Task EnsurePhotosExistAsync(ShopApplicationContext context)
+    {
+        if (!context.Photos.Any())
+        {
+            context.Photos.AddRange(
+                new Photo
+                {
+                    FileName = "photo1.jpg",
+                    FilePath = "/images/photo1.jpg",
+                    Length = 2048,
+                    ModelId = 1
+                },
+                new Photo
+                {
+                    FileName = "photo2.jpg",
+                    FilePath = "/images/photo2.jpg",
+                    Length = 1024,
+                    ModelId = 2
+                }
+            );
+            await context.SaveChangesAsync();
+        }
+    }
+
+    
     private static async Task EnsureModelSizesExistAsync(ShopApplicationContext context)
     {
         if (!context.ModelSizes.Any())
@@ -291,36 +340,106 @@ public class SeedData
         }
     }
 
-    
-    // private static async Task EnsureOrdersExistAsync(ShopApplicationContext context)
-    // {
-    //     if (!context.Orders.Any())
-    //     {
-    //         var products = await context.Products.ToListAsync();
-    //         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
-    //
-    //         if (products.Count >= 2 && user != null)
-    //         {
-    //             var orderItems = new List<OrderItem>
-    //             {
-    //                 new OrderItem { ProductId = 1, Quantity = 2, UnitPrice = products[0].Price },
-    //                 new OrderItem { ProductId = 1, Quantity = 1, UnitPrice = products[^1].Price }
-    //             };
-    //
-    //             context.Orders.Add(
-    //                 new Order
-    //                 {
-    //                     Id = 1,
-    //                     UserId = user.Id,
-    //                     Created = DateTime.UtcNow,
-    //                     Status = OrderStatus.Processed,
-    //                     TotalAmount = orderItems.Sum(oi => oi.Quantity * oi.Amount),
-    //                     OrderItems = orderItems
-    //                 }
-    //             );
-    //
-    //             await context.SaveChangesAsync();
-    //         }
-    //     }
-    // }
+    private static async Task EnsureOrdersExistAsync(ShopApplicationContext context)
+    {
+        // if (!context.Orders.Any())
+        // {
+        //     var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
+        //     var model1 = await context.Models.FirstOrDefaultAsync(m => m.ProductId == 1);
+        //     var model2 = await context.Models.FirstOrDefaultAsync(m => m.ProductId == 2);
+        //
+        //     if (user != null && model1 != null && model2 != null)
+        //     {
+        //         var orders = new List<Order>
+        //         {
+        //             new Order
+        //             {
+        //                 UserId = user.Id,
+        //                 Created = DateTime.UtcNow,
+        //                 Status = OrderStatus.Processed,
+        //                 TotalAmount = 300,  // пример суммы
+        //                 OrderItems = new List<OrderItem>
+        //                 {
+        //                     new OrderItem
+        //                     {
+        //                         ModelId = model1.Id,
+        //                         Quantity = 1,
+        //                         Amount = model1.Price
+        //                     },
+        //                     new OrderItem
+        //                     {
+        //                         ModelId = model2.Id,
+        //                         Quantity = 2,
+        //                         Amount = model2.Price
+        //                     }
+        //                 }
+        //             },
+        //             new Order
+        //             {
+        //                 UserId = user.Id,
+        //                 Created = DateTime.UtcNow.AddDays(-10),
+        //                 Status = OrderStatus.Delivered,
+        //                 TotalAmount = 400,  // пример суммы
+        //                 OrderItems = new List<OrderItem>
+        //                 {
+        //                     new OrderItem
+        //                     {
+        //                         ModelId = model2.Id,
+        //                         Quantity = 1,
+        //                         Amount = model2.Price
+        //                     }
+        //                 }
+        //             }
+        //         };
+        //
+        //         context.Orders.AddRange(orders);
+        //         await context.SaveChangesAsync();
+        //     }
+        // }
+
+        if (!context.Orders.Any())
+        {
+            var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
+            var size1 = await context.Sizes.FirstOrDefaultAsync(s => s.Name == "38");
+            var size2 = await context.Sizes.FirstOrDefaultAsync(s => s.Name == "39");
+            var model1 = await context.Models.FirstOrDefaultAsync(m => m.ProductId == 1);
+            var model2 = await context.Models.FirstOrDefaultAsync(m => m.ProductId == 2);
+
+            if (size1 != null && size2 != null)
+            {
+                var orders = new List<Order>
+                {
+                    new Order
+                    {
+                        UserId = user.Id,
+                        Created = DateTime.UtcNow,
+                        Status = OrderStatus.Processed,
+                        TotalAmount = 300,
+                        OrderItems = new List<OrderItem>
+                        {
+                            new OrderItem
+                            {
+                                ModelId = model1.Id,
+                                Quantity = 1,
+                                Amount = model1.Price,
+                                SizeId = size1.Id // Указываем SizeId
+                            },
+                            new OrderItem
+                            {
+                                ModelId = model2.Id,
+                                Quantity = 2,
+                                Amount = model2.Price,
+                                SizeId = size2.Id // Указываем SizeId
+                            }
+                        }
+                    }
+                };
+
+                context.Orders.AddRange(orders);
+                await context.SaveChangesAsync();
+            }
+        }
+
+    }
+
 }

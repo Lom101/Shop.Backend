@@ -34,7 +34,7 @@ public class BrandController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateBrand(CreateBrandRequest request)
     {
-        var brand = await _brandService.CreateBrandAsync(request);
+        var brand = await _brandService.AddBrandAsync(request);
         return CreatedAtAction(nameof(GetAllBrands), new { id = brand.Id }, brand); // Возвращаем BrandDto
     }
 

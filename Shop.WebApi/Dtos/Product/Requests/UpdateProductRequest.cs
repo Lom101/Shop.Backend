@@ -1,5 +1,6 @@
 ﻿using Shop.WebAPI.Dtos.Brand;
 using Shop.WebAPI.Dtos.Category;
+using Shop.WebAPI.Dtos.Model.Response;
 
 namespace Shop.WebAPI.Dtos.Product.Requests;
 
@@ -13,5 +14,5 @@ public class UpdateProductRequest
     public int CategoryId { get; set; }
     public int BrandId { get; set; }
     
-    public ICollection<ModelDto> Models { get; set; }
+    public ICollection<GetModelResponse> Models { get; set; }
 }

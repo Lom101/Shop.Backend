@@ -18,6 +18,7 @@ namespace Shop.WebAPI.Data
         public DbSet<Color> Colors { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<Model> Models { get; set; } 
+        public DbSet<Photo> Photos { get; set; }
         
         public DbSet<ModelSize> ModelSizes { get; set; } // в референс не был прописан
 

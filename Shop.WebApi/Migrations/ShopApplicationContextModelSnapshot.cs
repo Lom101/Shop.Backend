@@ -485,7 +485,7 @@ namespace Shop.WebAPI.Migrations
 
                     b.HasIndex("ModelId");
 
-                    b.ToTable("Photo");
+                    b.ToTable("Photos");
                 });
 
             modelBuilder.Entity("Shop.WebAPI.Entities.Product", b =>

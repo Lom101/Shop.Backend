@@ -1,4 +1,6 @@
-﻿using Shop.WebAPI.Entities;
+﻿using Shop.WebAPI.Dtos.OrderItem.Responses;
+using Shop.WebAPI.Dtos.User.Responses;
+using Shop.WebAPI.Entities;
 using Shop.WebAPI.Enums;
 
 namespace Shop.WebAPI.Dtos.Order.Responses;
@@ -9,8 +11,8 @@ public class GetOrderResponse
     public DateTime Created { get; set; }
     public OrderStatus Status { get; set; }
     public decimal TotalAmount { get; set; }
-    
     public string UserId { get; set; }
+    public GetApplicationUserResponse User { get; set; }
     
-    public IEnumerable<OrderItemDto> OrderItems { get; set; }
+    public IEnumerable<GetOrderItemResponse> OrderItems { get; set; }
 }

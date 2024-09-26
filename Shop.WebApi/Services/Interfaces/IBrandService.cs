@@ -6,9 +6,9 @@ namespace Shop.WebAPI.Services.Interfaces;
 
 public interface IBrandService
 {
-    Task<IEnumerable<BrandDto>> GetAllBrandsAsync();
+    Task<IEnumerable<GetBrandResponse>> GetAllBrandsAsync();
     Task<GetBrandResponse> GetBrandByIdAsync(int id);
-    Task<BrandDto> CreateBrandAsync(CreateBrandRequest request);
-    Task<BrandDto> UpdateBrandAsync(UpdateBrandRequest request);
+    Task<GetBrandResponse> AddBrandAsync(CreateBrandRequest request);
+    Task<GetBrandResponse> UpdateBrandAsync(UpdateBrandRequest request);
     Task<bool> DeleteBrandAsync(int id);
 }

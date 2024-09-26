@@ -1,65 +1,60 @@
-﻿using AutoMapper;
-using Shop.WebAPI.Dtos.Order.Requests;
+﻿using Shop.WebAPI.Dtos.Order.Requests;
 using Shop.WebAPI.Dtos.Order.Responses;
 using Shop.WebAPI.Entities;
-using Shop.WebAPI.Enums;
-using Shop.WebAPI.Repository.Interfaces;
 using Shop.WebAPI.Services.Interfaces;
+using AutoMapper;
+using Shop.WebAPI.Repository.Interfaces;
 
-namespace Shop.WebAPI.Services;
-
-public class OrderService : IOrderService
+namespace Shop.WebAPI.Services
 {
-    private readonly IOrderRepository _orderRepository;
-    private readonly IMapper _mapper;
-
-    public OrderService(IOrderRepository orderRepository, IMapper mapper)
+    public class OrderService : IOrderService
     {
-        _orderRepository = orderRepository;
-        _mapper = mapper;
-    }
+        private readonly IOrderRepository _orderRepository;
+        private readonly IMapper _mapper;
 
-    public async Task<GetOrderResponse> GetOrderByIdAsync(int id)
-    {
-        var order = await _orderRepository.GetByIdAsync(id);
-        return _mapper.Map<GetOrderResponse>(order);
-    }
-
-    public async Task<IEnumerable<GetOrderResponse>> GetAllOrdersAsync()
-    {
-        var orders = await _orderRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<GetOrderResponse>>(orders);
-    }
-
-    public async Task<int> AddOrderAsync(CreateOrderRequest orderDto)
-    {
-        var order = _mapper.Map<Order>(orderDto);
-        order.Created = DateTime.UtcNow;
-        order.Status = OrderStatus.Pending; // Пример установки статуса по умолчанию
-        await _orderRepository.AddAsync(order);
-        return order.Id;
-    }
-
-    public async Task<bool> UpdateOrderAsync(UpdateOrderRequest orderDto)
-    {
-        var order = _mapper.Map<Order>(orderDto);
-        var existingOrder = await _orderRepository.GetByIdAsync(order.Id);
-        if (existingOrder == null)
+        public OrderService(IOrderRepository orderRepository, IMapper mapper)
         {
-            return false; // Заказ не найден
+            _orderRepository = orderRepository;
+            _mapper = mapper;
         }
-        await _orderRepository.UpdateAsync(order);
-        return true;
-    }
 
-    public async Task<bool> DeleteOrderAsync(int id)
-    {
-        var existingOrder = await _orderRepository.GetByIdAsync(id);
-        if (existingOrder == null)
+        public async Task<IEnumerable<GetOrderResponse>> GetAllOrdersAsync()
         {
-            return false; // Заказ не найден
+            var orders = await _orderRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<GetOrderResponse>>(orders);
         }
-        await _orderRepository.DeleteAsync(id);
-        return true;
+
+        public async Task<GetOrderResponse> GetOrderByIdAsync(int id)
+        {
+            var order = await _orderRepository.GetByIdAsync(id);
+            return _mapper.Map<GetOrderResponse>(order);
+        }
+
+        public async Task<int> AddOrderAsync(CreateOrderRequest request)
+        {
+            var order = _mapper.Map<Order>(request);
+            order.Created = DateTime.UtcNow;
+            await _orderRepository.AddAsync(order);
+            return order.Id;
+        }
+
+        public async Task<bool> UpdateOrderAsync(UpdateOrderRequest request)
+        {
+            var order = await _orderRepository.GetByIdAsync(request.Id);
+            if (order == null) return false;
+
+            _mapper.Map(request, order);
+            await _orderRepository.UpdateAsync(order);
+            return true;
+        }
+
+        public async Task<bool> DeleteOrderAsync(int id)
+        {
+            var order = await _orderRepository.GetByIdAsync(id);
+            if (order == null) return false;
+
+            await _orderRepository.DeleteAsync(id);
+            return true;
+        }
     }
 }

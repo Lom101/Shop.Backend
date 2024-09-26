@@ -90,10 +90,8 @@ namespace Shop.Tests
             // Arrange
             var createOrderRequest = new CreateOrderRequest 
             { 
-                UserId = "user1", 
-                Created = DateTime.UtcNow, 
+                UserId = 1, 
                 Status = OrderStatus.Pending, 
-                TotalAmount = 100.00m 
             };
             _mockOrderService.Setup(s => s.AddOrderAsync(createOrderRequest))
                 .ReturnsAsync(1);
@@ -115,9 +113,7 @@ namespace Shop.Tests
             { 
                 Id = 1, 
                 UserId = "user1", 
-                Created = DateTime.UtcNow, 
-                Status = OrderStatus.Shipped, 
-                TotalAmount = 150.00m 
+                Status = OrderStatus.Shipped
             };
             _mockOrderService.Setup(s => s.UpdateOrderAsync(updateOrderRequest))
                 .ReturnsAsync(true);
@@ -137,9 +133,7 @@ namespace Shop.Tests
             { 
                 Id = 1, 
                 UserId = "user1", 
-                Created = DateTime.UtcNow, 
-                Status = OrderStatus.Shipped, 
-                TotalAmount = 150.00m 
+                Status = OrderStatus.Shipped,
             };
             _mockOrderService.Setup(s => s.UpdateOrderAsync(updateOrderRequest))
                 .ReturnsAsync(false);
@@ -158,10 +152,8 @@ namespace Shop.Tests
             var updateOrderRequest = new UpdateOrderRequest 
             { 
                 Id = 2, 
-                UserId = "user1", 
-                Created = DateTime.UtcNow, 
-                Status = OrderStatus.Shipped, 
-                TotalAmount = 150.00m 
+                UserId = "user1",
+                Status = OrderStatus.Shipped
             };
 
             // Act

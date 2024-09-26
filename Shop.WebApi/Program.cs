@@ -9,6 +9,7 @@ using Shop.WebAPI.Data;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Infrastructure.Handlers;
 using Shop.WebAPI.Infrastructure.Mappings;
+using Shop.WebAPI.Repositories;
 using Shop.WebAPI.Repository;
 using Shop.WebAPI.Repository.Interfaces;
 using Shop.WebAPI.SeedData;
@@ -92,6 +93,9 @@ builder.Services.AddTransient<IAddressService, AddressService>();
 builder.Services.AddTransient<ICommentService, CommentService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<IBrandService, BrandService>();
+builder.Services.AddTransient<IColorService, ColorService>();
+builder.Services.AddTransient<IModelService, ModelService>();
+builder.Services.AddTransient<ISizeService, SizeService>();
 
 
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
@@ -100,6 +104,10 @@ builder.Services.AddTransient<IAddressRepository, AddressRepository>();
 builder.Services.AddTransient<ICommentRepository, CommentRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
+builder.Services.AddTransient<IColorRepository, ColorRepository>();
+builder.Services.AddTransient<IModelRepository, ModelRepository>();
+builder.Services.AddTransient<ISizeRepository, SizeRepository>();
+
 
 
 #endregion
