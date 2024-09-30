@@ -1,7 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Shop.WebAPI.Dtos.Brand.Response;
+using Shop.WebAPI.Dtos.Category.Responses;
+using Shop.WebAPI.Dtos.Color.Responses;
 using Shop.WebAPI.Dtos.Product;
 using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
+using Shop.WebAPI.Dtos.Size.Responses;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Repository.Interfaces;
 using Shop.WebAPI.Services.Interfaces;
@@ -30,56 +35,56 @@ public class ProductService : IProductService
         var products = await _productRepository.GetAllAsync();
         return _mapper.Map<IEnumerable<GetProductResponse>>(products);
     }
+    public async Task<GetProductFilterOptionsResponse> GetProductFilterOptionsAsync()
+    {
+        var categories = await _productRepository.GetAvailableCategoriesAsync();
+        var brands = await _productRepository.GetAvailableBrandsAsync();
+        var sizes = await _productRepository.GetAvailableSizesAsync();
+        var colors = await _productRepository.GetAvailableColorsAsync();
+        var minPrice = await _productRepository.GetMinPriceAsync();
+        var maxPrice = await _productRepository.GetMaxPriceAsync();
+        
+        return new GetProductFilterOptionsResponse()
+        {
+            Categories = _mapper.Map<IEnumerable<GetCategoryResponse>>(categories),
+            Brands = _mapper.Map<IEnumerable<GetBrandResponse>>(brands),
+            Sizes = _mapper.Map<IEnumerable<GetSizeResponse>>(sizes),
+            Colors = _mapper.Map<IEnumerable<GetColorResponse>>(colors),
+            MinPrice = minPrice, // Установи минимальную цену
+            MaxPrice = maxPrice, // Максимальная цена
+        };
+    }
 
-    // public async Task<ProductOptionsDto> GetProductOptionsAsync()
-    // {
-    //     var categories = await _productRepository.GetAvailableCategoriesAsync();
-    //     var brands = await _productRepository.GetAvailableBrandsAsync();
-    //     var sizes = await _productRepository.GetAvailableSizesAsync();
-    //     var colors = await _productRepository.GetAvailableColorsAsync();
-    //     var minPrice = await _productRepository.GetMinPriceAsync();
-    //     var maxPrice = await _productRepository.GetMaxPriceAsync();
-    //     
-    //     return new ProductOptionsDto()
-    //     {
-    //         Categories = categories,
-    //         Brands = brands,
-    //         Sizes = sizes,
-    //         Colors = colors,
-    //         MinPrice = minPrice, // Установи минимальную цену
-    //         MaxPrice = maxPrice, // Максимальная цена
-    //         InStock = true // По умолчанию: товар в наличии
-    //     };
-    // }
-
-    // public async Task<FilteredPagedProductResponse> GetFilteredPagedProductsAsync(
-    //     int pageNumber, 
-    //     int pageSize, 
-    //     int? categoryId, 
-    //     int? brandId, 
-    //     int? size, 
-    //     string color, 
-    //     decimal? minPrice, 
-    //     decimal? maxPrice, 
-    //     bool? inStock)
-    // {
-    //     // Получаем отфильтрованные данные
-    //     var products = await _productRepository.GetFilteredProductsAsync(categoryId, brandId, size, color, minPrice, maxPrice, inStock);
-    //
-    //     // Пагинация
-    //     var totalItems = products.Count();
-    //     var pagedProducts = products.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-    //
-    //     var productDtos = _mapper.Map<List<ProductDto>>(pagedProducts);
-    //     
-    //     return new FilteredPagedProductResponse
-    //     {
-    //         Products = productDtos,
-    //         TotalItems = totalItems,
-    //         PageNumber = pageNumber,
-    //         PageSize = pageSize
-    //     };
-    // }
+    
+    
+    public async Task<GetProductFilteredPagedResponse> GetFilteredPagedProductsAsync(
+        int pageNumber,
+        int pageSize,
+        int? categoryId,
+        int? brandId,
+        double? minPrice,
+        double? maxPrice,
+        bool? inStock,
+        [FromQuery] List<int> sizeIds,
+        [FromQuery] List<int> colorIds)
+    {
+        // Получаем отфильтрованные данные
+        var filteredProducts = await _productRepository.GetFilteredProductsAsync(
+            categoryId, brandId, minPrice, maxPrice, inStock, sizeIds, colorIds);
+        
+        // Пагинация
+        var totalCount = filteredProducts.Count();
+        var filteredPagedProducts =  filteredProducts
+            .Skip((int)((pageNumber - 1) * pageSize))
+            .Take((int)pageSize)
+            .ToList();
+        
+        return new GetProductFilteredPagedResponse()
+        {
+            Items = _mapper.Map<List<GetProductResponse>>(filteredPagedProducts),
+            TotalCount = totalCount
+        };
+    }
 
     public async Task<int> AddProductAsync(CreateProductRequest productDto)
     {

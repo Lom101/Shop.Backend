@@ -16,22 +16,16 @@ public class Product
     public Brand Brand { get; set; }
     
     public ICollection<Model> Models { get; set; }
+    public ICollection<Comment> Comments { get; set; } // отзывы 
     
-    // public Product()
-    // {
-    //     Created = DateTime.Now;
-    //     Models = new Collection<Model>();
-    // }
+    
+    public Product()
+    {
+        Created = DateTime.Now;
+        Models = new Collection<Model>();
+        Comments = new Collection<Comment>();
+    }
 }
 
-
-
-// public ICollection<Comment> Comments { get; set; }
-//
-// // Новые свойства для кроссовок
-// public int[] Sizes { get; set; } // все размеры товара
-// public string Color { get; set; } // Цвет
-// // Бренд
-    
-// public string Material { get; set; } // Материал
 // public bool IsAvailable { get; set; } // Наличие на складе
+// public string Material { get; set; } // Материал

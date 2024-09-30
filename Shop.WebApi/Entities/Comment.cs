@@ -1,4 +1,6 @@
-﻿namespace Shop.WebAPI.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Shop.WebAPI.Entities;
 
 public class Comment
 {
@@ -6,7 +8,9 @@ public class Comment
     public string Text { get; set; }
     public DateTime Created { get; set; }
     
-    // тут скорее всего замена на Model
+    [Range(1, 5, ErrorMessage = "Рейтинг должен быть от 1 до 5.")]
+    public int Rating { get; set; }  // Значение рейтинга от 1 до 5
+    
     public int ProductId { get; set; }
     public Product Product { get; set; }
     public string UserId { get; set; }

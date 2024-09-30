@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Shop.WebAPI.Data;
+using Shop.WebAPI.Dtos.Product.Requests;
+using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Repository.Interfaces;
 
@@ -14,125 +17,90 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<Product> GetByIdAsync(int id)
+    public async Task<Product?> GetByIdAsync(int id)
     {
-        return await _context.Products.FindAsync(id);
+        return await _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Brand)
+            .Include(p => p.Comments) // Загружаем связанные комментарии
+            .Include(p => p.Models).ThenInclude(m => m.Color)
+            .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
+            .Include(p => p.Models).ThenInclude(m => m.Photos)
+            .FirstOrDefaultAsync(p => p.Id == id);
     }
 
     public async Task<IEnumerable<Product>> GetAllAsync()
     {
-        return await _context.Products.ToListAsync();
+        return await _context.Products
+            .Include(p => p.Category)
+            .Include(p => p.Brand)
+            .Include(p => p.Comments) // Загружаем связанные комментарии
+            .Include(p => p.Models).ThenInclude(m => m.Color)
+            .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
+            .Include(p => p.Models).ThenInclude(m => m.Photos)
+            .ToListAsync();
     }
     
-    // public async Task<decimal> GetMinPriceAsync()
-    // {
-    //     return await _context.Products
-    //         .MinAsync(p => p.Price);
-    // }
-    //
-    // public async Task<decimal> GetMaxPriceAsync()
-    // {
-    //     return await _context.Products
-    //         .MaxAsync(p => p.Price); // Получаем максимальную цену из товаров
-    // }
-    // public async Task<List<string>> GetAvailableCategoriesAsync()
-    // {
-    //     return await _context.Categories
-    //         .Select(c => c.Name)
-    //         .Distinct()
-    //         .ToListAsync(); 
-    // }
-    //
-    // public async Task<List<string>> GetAvailableBrandsAsync()
-    // {
-    //     return await _context.Brands
-    //         .Select(b => b.Name)
-    //         .Distinct()
-    //         .ToListAsync();
-    // }
-    //
-    // public async Task<List<int>> GetAvailableSizesAsync()
-    // {
-    //     // Сначала загружаем все продукты асинхронно
-    //     var products = await _context.Products
-    //         .ToListAsync();  // Асинхронный запрос к базе данных для загрузки всех продуктов
-    //
-    //     // Выполняем обработку массива размеров в памяти
-    //     return products
-    //         .SelectMany(p => p.Sizes)  // Получаем все размеры из каждого продукта
-    //         .Distinct()  // Убираем дубликаты
-    //         .ToList();  // Преобразуем результат в список
-    // }
-    //
-    // public async Task<List<string>> GetAvailableColorsAsync()
-    // {
-    //     return await _context.Products
-    //         .Select(p => p.Color)
-    //         .Distinct()
-    //         .ToListAsync();
-    // }
+    public async Task<IEnumerable<Product>> GetFilteredProductsAsync(
+        int? categoryId,
+        int? brandId,
+        double? minPrice,
+        double? maxPrice,
+        bool? inStock,
+        [FromQuery] List<int> sizeIds,
+        [FromQuery] List<int> colorIds
+    )
+    {
+        var query = _context.Products
+            .Include(p => p.Category)  // Включаем категорию
+            .Include(p => p.Brand)     // Включаем бренд
+            .Include(p => p.Models)    // Включаем модели
+            .ThenInclude(m => m.Color)  // Включаем цвет модели
+            .Include(p => p.Models)
+            .ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)  // Включаем размеры моделей
+            .Include(p => p.Models)
+            .ThenInclude(m => m.Photos)  // Включаем фото моделей
+            .Include(p => p.Comments) // Загружаем связанные комментарии
+            .AsQueryable();
     
-    // public async Task<IQueryable<Product>> GetFilteredProductsAsync(
-    //     int? categoryId, 
-    //     int? brandId, 
-    //     int? size, 
-    //     string color, 
-    //     decimal? minPrice, 
-    //     decimal? maxPrice, 
-    //     bool? inStock)
-    // {
-    //     var query = _context.Products.AsQueryable();
-    //
-    //     // Фильтрация по категории
-    //     if (categoryId.HasValue)
-    //     {
-    //         query = query.Where(p => p.CategoryId == categoryId.Value);
-    //     }
-    //
-    //     // Фильтрация по бренду
-    //     if (brandId.HasValue)
-    //     {
-    //         query = query.Where(p => p.BrandId == brandId.Value);
-    //     }
-    //
-    //     // // Фильтрация по размеру ////////////////////////// ???????? 
-    //     // if (size.HasValue)
-    //     // {
-    //     //     query = query.Where(p => p.Sizes == size.Value);
-    //     // }
-    //     
-    //     // Фильтрация по цвету
-    //     if (!string.IsNullOrEmpty(color))
-    //     {
-    //         query = query.Where(p => p.Color == color);
-    //     }
-    //
-    //     // Фильтрация по цене
-    //     if (minPrice.HasValue)
-    //     {
-    //         query = query.Where(p => p.Price >= minPrice.Value);
-    //     }
-    //     if (maxPrice.HasValue)
-    //     {
-    //         query = query.Where(p => p.Price <= maxPrice.Value);
-    //     }
-    //
-    //     // Фильтрация по наличию на складе
-    //     if (inStock.HasValue)
-    //     {
-    //         query = query.Where(p => p.StockQuantity > 0 == inStock.Value);
-    //     }
-    //
-    //     return await Task.FromResult(query);
-    // }
+        
+        // Проверка categoryId
+        if (categoryId.HasValue)
+            query = query.Where(p => p.CategoryId == categoryId.Value);
 
-    public async Task AddAsync(Product product)
+        // Проверка brandId
+        if (brandId.HasValue)
+            query = query.Where(p => p.BrandId == brandId.Value);
+
+        // Фильтрация по минимальной и максимальной цене
+        if (minPrice.HasValue)
+            query = query.Where(p => p.Models.Any(m => m.Price >= minPrice.Value));
+
+        if (maxPrice.HasValue)
+            query = query.Where(p => p.Models.Any(m => m.Price <= maxPrice.Value));
+
+        // Фильтрация по размерам
+        if (sizeIds != null && sizeIds.Any())
+            query = query.Where(p => p.Models
+                .SelectMany(m => m.ModelSizes)
+                .Any(ms => sizeIds.Contains(ms.SizeId)));
+
+        // Фильтрация по цветам
+        if (colorIds != null && colorIds.Any())
+            query = query.Where(p => p.Models.Any(m => colorIds.Contains(m.ColorId)));
+
+       
+        return query;
+    }
+
+
+    public async Task AddAsync(Product? product)
     {
         await _context.Products.AddAsync(product);
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(Product product)
+    public async Task UpdateAsync(Product? product)
     {
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
@@ -146,6 +114,37 @@ public class ProductRepository : IProductRepository
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<IEnumerable<Category>> GetAvailableCategoriesAsync()
+    {
+        return await _context.Categories.ToListAsync();
+
+    }
+
+    public async Task<IEnumerable<Brand>> GetAvailableBrandsAsync()
+    {
+        return await _context.Brands.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Size>> GetAvailableSizesAsync()
+    {
+        return await _context.Sizes.ToListAsync();
+    }
+
+    public async Task<IEnumerable<Color>> GetAvailableColorsAsync()
+    {
+        return await _context.Colors.ToListAsync();
+    }
+
+    public async Task<decimal> GetMinPriceAsync()
+    {
+        return (decimal)await _context.Models.MinAsync(m => m.Price);
+    }
+
+    public async Task<decimal> GetMaxPriceAsync()
+    {
+        return (decimal)await _context.Models.MaxAsync(m => m.Price);
     }
 }
 

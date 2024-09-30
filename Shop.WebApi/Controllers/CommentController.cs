@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Comment.Requests;
 using Shop.WebAPI.Services.Interfaces;
 
@@ -39,6 +40,14 @@ public class CommentController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddComment([FromBody] CreateCommentRequest createCommentRequest)
     {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+        // Проверяем, может ли пользователь оставить отзыв
+        if (!_commentService.CanUserLeaveReview(userId, createCommentRequest.ProductId))
+        {
+            return BadRequest("Вы можете оставить отзыв только если покупали этот товар.");
+        }
+
+        
         var newCommentId = await _commentService.AddCommentAsync(createCommentRequest);
         return CreatedAtAction(nameof(GetCommentById), new { id = newCommentId }, createCommentRequest);
     }

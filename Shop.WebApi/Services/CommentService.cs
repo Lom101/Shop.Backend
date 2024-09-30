@@ -59,4 +59,9 @@ public class CommentService : ICommentService
         await _commentRepository.DeleteAsync(id);
         return true;
     }
+
+    public bool CanUserLeaveReview(string userId, int productId)
+    {
+        return _commentRepository.CanUserLeaveReview(userId, productId);
+    }
 }

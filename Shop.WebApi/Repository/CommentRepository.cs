@@ -14,6 +14,16 @@ public class CommentRepository : ICommentRepository
         _context = context;
     }
 
+    public bool CanUserLeaveReview(string userId, int productId)
+    {
+        // Проверяем, есть ли у пользователя заказы с этим товаром
+        var hasOrderWithProduct = _context.OrderItems
+            .Include(oi => oi.Order)
+            .Any(oi => oi.Order.UserId == userId && oi.Model.ProductId == productId);
+
+        return hasOrderWithProduct;
+    }    
+    
     public async Task<IEnumerable<Comment>> GetAllAsync()
     {
         // return await _context.Comments.Include(c => c.Product)

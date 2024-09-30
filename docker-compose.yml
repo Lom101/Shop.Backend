@@ -12,6 +12,7 @@ services:
       - db
     networks:
       - dev
+    restart: always
   db:
     image: postgres:latest
     environment:

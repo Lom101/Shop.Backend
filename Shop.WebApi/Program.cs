@@ -127,6 +127,8 @@ if (app.Environment.IsDevelopment())
 //app.UseCors("AllowReactApp");
 app.UseCors("AllowAll");
 
+app.UseStaticFiles();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

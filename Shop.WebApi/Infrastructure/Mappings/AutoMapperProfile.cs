@@ -116,7 +116,12 @@ public class AutoMapperProfile : Profile
         CreateMap<Order, GetOrderResponse>();
         
         // Маппинги для Product
-        CreateMap<Product, GetProductResponse>();
+        CreateMap<Product, GetProductResponse>()
+            // Маппинг для поля среднего рейтинга
+            .ForMember(dest => dest.AverageRating, opt => opt.MapFrom(src => 
+                src.Comments.Any() ? src.Comments.Average(c => c.Rating) : 0)) // Рассчитываем средний рейтинг
+            // Маппинг для количества комментариев
+            .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count)); // Количество комментариев
         
         CreateMap<ApplicationUser, GetApplicationUserResponse>();
     }

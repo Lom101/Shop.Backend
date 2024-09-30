@@ -9,4 +9,5 @@ public interface ICommentRepository
     Task AddAsync(Comment comment);
     Task UpdateAsync(Comment comment);
     Task DeleteAsync(int id);
+    bool CanUserLeaveReview(string userId, int productId);
 }
