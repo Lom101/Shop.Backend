@@ -4,6 +4,7 @@ using Shop.WebAPI.Dtos.Category;
 using Shop.WebAPI.Dtos.Category.Responses;
 using Shop.WebAPI.Dtos.Comment.Responses;
 using Shop.WebAPI.Dtos.Model.Response;
+using Shop.WebAPI.Dtos.Size.Responses;
 
 namespace Shop.WebAPI.Dtos.Product.Responses;
 
@@ -16,6 +17,9 @@ public class GetProductResponse
     
     public double AverageRating { get; set; } // Поле для среднего рейтинга
     public int CommentsCount { get; set; }  // Количество комментариев
+
+    public bool IsAvailable { get; set; } // Это свойство будет возвращать true, если есть хоть одна доступная модель у продукт
+
     
     public int CategoryId { get; set; }
     public GetCategoryResponse Category { get; set; }
@@ -25,4 +29,5 @@ public class GetProductResponse
     
     public ICollection<GetModelResponse> Models { get; set; }
     public List<GetCommentResponse> Comments { get; set; }
+    
 }

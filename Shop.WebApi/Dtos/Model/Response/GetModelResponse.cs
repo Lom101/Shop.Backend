@@ -11,12 +11,12 @@ public class GetModelResponse
     public double Price { get; set; }
 
     public int ProductId { get; set; }
-    //public GetProductResponse Product { get; set; } //изза этого была ошибка циклическая
     
     public int ColorId { get; set; }    
     public GetColorResponse Color { get; set; }
     
+    public bool IsAvailable { get; set; } // Это свойство будет возвращать true, если у модели есть хотя бы один доступный размер
     
-    //public ICollection<GetSizeResponse> Sizes { get; set; }
+    public ICollection<GetSizeResponse> Sizes { get; set; }
     public ICollection<GetPhotoResponse> Photos { get; set; }
 }

@@ -18,6 +18,8 @@ public class Product
     public ICollection<Model> Models { get; set; }
     public ICollection<Comment> Comments { get; set; } // отзывы 
     
+    // В наличие на складе, если есть хоть одна доступная модель на складе
+    public bool IsAvailable => Models.Any(m => m.IsAvailable == true); 
     
     public Product()
     {
@@ -27,5 +29,5 @@ public class Product
     }
 }
 
-// public bool IsAvailable { get; set; } // Наличие на складе
+
 // public string Material { get; set; } // Материал

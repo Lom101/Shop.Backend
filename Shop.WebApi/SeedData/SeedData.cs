@@ -478,58 +478,57 @@ public class SeedData
     }
 }
     private static async Task EnsureModelSizesExistAsync(ShopApplicationContext context)
-{
-    if (!context.ModelSizes.Any())
     {
-        context.ModelSizes.AddRange(
-            // Air Max 1 доступные размеры 38, 39, 40
-            new ModelSize { ModelId = 1, SizeId = 1 }, // Size 38
-            new ModelSize { ModelId = 1, SizeId = 2 }, // Size 39
-            new ModelSize { ModelId = 1, SizeId = 3 }, // Size 40
+        if (!context.ModelSizes.Any())
+        {
+            context.ModelSizes.AddRange(
+                // Air Max 1 доступные размеры 38, 39, 40
+                new ModelSize { ModelId = 1, SizeId = 1, StockQuantity = 10 }, // Size 38
+                new ModelSize { ModelId = 1, SizeId = 2, StockQuantity = 5 },  // Size 39
+                new ModelSize { ModelId = 1, SizeId = 3, StockQuantity = 0 },  // Size 40 (недоступен)
 
-            // Ultraboost доступные размеры 39, 40, 41
-            new ModelSize { ModelId = 2, SizeId = 2 }, // Size 39
-            new ModelSize { ModelId = 2, SizeId = 3 }, // Size 40
-            new ModelSize { ModelId = 2, SizeId = 4 }, // Size 41
+                // Ultraboost доступные размеры 39, 40, 41
+                new ModelSize { ModelId = 2, SizeId = 2, StockQuantity = 12 }, // Size 39
+                new ModelSize { ModelId = 2, SizeId = 3, StockQuantity = 8 },  // Size 40
+                new ModelSize { ModelId = 2, SizeId = 4, StockQuantity = 6 },  // Size 41
 
-            // Puma RS-X доступные размеры 38, 40, 41
-            new ModelSize { ModelId = 3, SizeId = 1 }, // Size 38
-            new ModelSize { ModelId = 3, SizeId = 3 }, // Size 40
-            new ModelSize { ModelId = 3, SizeId = 4 }, // Size 41
+                // Puma RS-X доступные размеры 38, 40, 41
+                new ModelSize { ModelId = 3, SizeId = 1, StockQuantity = 5 },  // Size 38
+                new ModelSize { ModelId = 3, SizeId = 3, StockQuantity = 3 },  // Size 40
+                new ModelSize { ModelId = 3, SizeId = 4, StockQuantity = 0 },  // Size 41 (недоступен)
 
-            // Reebok Classic доступные размеры 39, 40, 41, 42
-            new ModelSize { ModelId = 4, SizeId = 2 }, // Size 39
-            new ModelSize { ModelId = 4, SizeId = 3 }, // Size 40
-            new ModelSize { ModelId = 4, SizeId = 4 }, // Size 41
-            new ModelSize { ModelId = 4, SizeId = 5 }, // Size 42
+                // Reebok Classic доступные размеры 39, 40, 41, 42
+                new ModelSize { ModelId = 4, SizeId = 2, StockQuantity = 10 }, // Size 39
+                new ModelSize { ModelId = 4, SizeId = 3, StockQuantity = 5 },  // Size 40
+                new ModelSize { ModelId = 4, SizeId = 4, StockQuantity = 0 },  // Size 41 (недоступен)
+                new ModelSize { ModelId = 4, SizeId = 5, StockQuantity = 7 },  // Size 42
 
-            // New Balance 574 доступные размеры 38, 40, 42
-            new ModelSize { ModelId = 5, SizeId = 1 }, // Size 38
-            new ModelSize { ModelId = 5, SizeId = 3 }, // Size 40
-            new ModelSize { ModelId = 5, SizeId = 5 }, // Size 42
+                // New Balance 574 доступные размеры 38, 40, 42
+                new ModelSize { ModelId = 5, SizeId = 1, StockQuantity = 8 },  // Size 38
+                new ModelSize { ModelId = 5, SizeId = 3, StockQuantity = 0 },  // Size 40 (недоступен)
+                new ModelSize { ModelId = 5, SizeId = 5, StockQuantity = 6 },  // Size 42
 
-            // Nike Air Force 1 доступные размеры 39, 41, 43
-            new ModelSize { ModelId = 6, SizeId = 2 }, // Size 39
-            new ModelSize { ModelId = 6, SizeId = 4 }, // Size 41
-            new ModelSize { ModelId = 6, SizeId = 6 }, // Size 43
+                // Nike Air Force 1 доступные размеры 39, 41, 43
+                new ModelSize { ModelId = 6, SizeId = 2, StockQuantity = 12 }, // Size 39
+                new ModelSize { ModelId = 6, SizeId = 4, StockQuantity = 0 },  // Size 41 (недоступен)
+                new ModelSize { ModelId = 6, SizeId = 6, StockQuantity = 5 },  // Size 43
 
-            // Adidas NMD доступные размеры 38, 39, 41
-            new ModelSize { ModelId = 7, SizeId = 1 }, // Size 38
-            new ModelSize { ModelId = 7, SizeId = 2 }, // Size 39
-            new ModelSize { ModelId = 7, SizeId = 4 }, // Size 41
+                // Adidas NMD доступные размеры 38, 39, 41
+                new ModelSize { ModelId = 7, SizeId = 1, StockQuantity = 4 },  // Size 38
+                new ModelSize { ModelId = 7, SizeId = 2, StockQuantity = 10 }, // Size 39
+                new ModelSize { ModelId = 7, SizeId = 4, StockQuantity = 0 },  // Size 41 (недоступен)
 
-            // Puma Suede доступные размеры 40, 41, 42, 43
-            new ModelSize { ModelId = 8, SizeId = 3 }, // Size 40
-            new ModelSize { ModelId = 8, SizeId = 4 }, // Size 41
-            new ModelSize { ModelId = 8, SizeId = 5 }, // Size 42
-            new ModelSize { ModelId = 8, SizeId = 6 }  // Size 43
-        );
+                // Puma Suede доступные размеры 40, 41, 42, 43
+                new ModelSize { ModelId = 8, SizeId = 3, StockQuantity = 2 },  // Size 40
+                new ModelSize { ModelId = 8, SizeId = 4, StockQuantity = 0 },  // Size 41 (недоступен)
+                new ModelSize { ModelId = 8, SizeId = 5, StockQuantity = 3 },  // Size 42
+                new ModelSize { ModelId = 8, SizeId = 6, StockQuantity = 1 }   // Size 43
+            );
 
-        await context.SaveChangesAsync();
-    }
-}
-    
-    
+            await context.SaveChangesAsync();
+        }
+    }   
+
     
     
     private static async Task EnsurePhotosExistAsync(ShopApplicationContext context)

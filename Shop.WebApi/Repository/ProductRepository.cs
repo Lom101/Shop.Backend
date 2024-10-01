@@ -22,10 +22,10 @@ public class ProductRepository : IProductRepository
         return await _context.Products
             .Include(p => p.Category)
             .Include(p => p.Brand)
-            .Include(p => p.Comments) // Загружаем связанные комментарии
             .Include(p => p.Models).ThenInclude(m => m.Color)
             .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
             .Include(p => p.Models).ThenInclude(m => m.Photos)
+            .Include(p => p.Comments) // Загружаем связанные комментарии
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -34,10 +34,10 @@ public class ProductRepository : IProductRepository
         return await _context.Products
             .Include(p => p.Category)
             .Include(p => p.Brand)
-            .Include(p => p.Comments) // Загружаем связанные комментарии
             .Include(p => p.Models).ThenInclude(m => m.Color)
             .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
             .Include(p => p.Models).ThenInclude(m => m.Photos)
+            .Include(p => p.Comments) // Загружаем связанные комментарии
             .ToListAsync();
     }
     
@@ -78,6 +78,10 @@ public class ProductRepository : IProductRepository
 
         if (maxPrice.HasValue)
             query = query.Where(p => p.Models.Any(m => m.Price <= maxPrice.Value));
+
+        if (inStock.HasValue)
+            query = query.Where(p => p.Models.Any(m =>
+                m.ModelSizes.Any(ms => ms.StockQuantity > 0)) == inStock.Value);
 
         // Фильтрация по размерам
         if (sizeIds != null && sizeIds.Any())

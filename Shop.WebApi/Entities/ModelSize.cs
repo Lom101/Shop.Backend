@@ -10,4 +10,6 @@ public class ModelSize
 
     public int SizeId { get; set; }
     public Size Size { get; set; }
+    
+    public int StockQuantity { get; set; } // Количество на складе для конкретного размера модели
 }

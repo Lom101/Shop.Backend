@@ -33,7 +33,21 @@ public class AutoMapperProfile : Profile
     {
         CreateMap<Color, GetColorResponse>();
 
-        CreateMap<Model, GetModelResponse>();
+        CreateMap<Model, GetModelResponse>()
+            .ForMember(dest => dest.Sizes, opt
+                => opt.MapFrom(src => src.ModelSizes.Select(ms => ms.Size)))
+            .ForMember(dest => dest.IsAvailable, opt 
+                => opt.MapFrom(src => src.IsAvailable))
+            .ForMember(dest => dest.IsAvailable, opt 
+                => opt.MapFrom(src => src.ModelSizes.Any(ms => ms.StockQuantity > 0)))
+            .ForMember(dest => dest.Sizes, opt => 
+                opt.MapFrom(src => src.ModelSizes.Select(ms => new GetSizeResponse
+                {
+                    Id = ms.Size.Id,
+                    Name = ms.Size.Name,
+                    StockQuantity = ms.StockQuantity // Include stock quantity here
+                }).ToList()));
+        
         CreateMap<CreateModelRequest, Model>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
             .ForMember(dest => dest.Product, opt => opt.Ignore())
@@ -118,10 +132,14 @@ public class AutoMapperProfile : Profile
         // Маппинги для Product
         CreateMap<Product, GetProductResponse>()
             // Маппинг для поля среднего рейтинга
-            .ForMember(dest => dest.AverageRating, opt => opt.MapFrom(src => 
+            .ForMember(dest => dest.AverageRating, opt => opt.MapFrom(src =>
                 src.Comments.Any() ? src.Comments.Average(c => c.Rating) : 0)) // Рассчитываем средний рейтинг
             // Маппинг для количества комментариев
-            .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count)); // Количество комментариев
+            .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count)) // Количество комментариев
+            .ForMember(dest => dest.IsAvailable, opt 
+                => opt.MapFrom(src => src.IsAvailable));
+            // .ForMember(dest => dest.AllAvailableSizes, opt => opt.MapFrom(src => 
+            //     src.Models.SelectMany(m => m.ModelSizes).Select(ms => ms.Size).Distinct()));
         
         CreateMap<ApplicationUser, GetApplicationUserResponse>();
     }

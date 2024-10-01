@@ -17,6 +17,8 @@ public class Model
     public ICollection<ModelSize> ModelSizes { get; set; }
     public ICollection<Photo> Photos { get; set; }
     
+    public bool IsAvailable => ModelSizes.Any(size => size.StockQuantity > 0);
+    
     public Model()
     {
         ModelSizes = new Collection<ModelSize>();
