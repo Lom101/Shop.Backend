@@ -9,4 +9,5 @@ public interface IAddressRepository
     Task AddAsync(Address address);
     Task UpdateAsync(Address address);
     Task DeleteAsync(int id);
+    Task<IEnumerable<Address>> GetAddressesByUserIdAsync(string userId);
 }

@@ -12,11 +12,13 @@ public class GetOrderItemResponse
     public double Amount { get; set; }
     
     public int OrderId { get; set; }
-    public GetOrderResponse Order { get; set; }
+    // public GetOrderResponse Order { get; set; }
 
     public int ModelId { get; set; }
     public GetModelResponse Model { get; set; }
 
     public int SizeId { get; set; }
     public GetSizeResponse Size { get; set; }
+    
+    public decimal TotalPrice { get; set; }
 }

@@ -9,4 +9,5 @@ public interface IOrderRepository
     Task AddAsync(Order order);
     Task UpdateAsync(Order order);
     Task DeleteAsync(int id);
+    Task<IEnumerable<Order>> GetByUserId(string userId);
 }

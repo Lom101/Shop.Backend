@@ -22,6 +22,15 @@ public class OrderController : ControllerBase
         var orders = await _orderService.GetAllOrdersAsync();
         return Ok(orders);
     }
+    
+    // GET: api/order/get_by_user_id
+    [HttpGet("get_by_user_id")]
+    public async Task<IActionResult> GetOrdersByUserId(string userId)
+    {
+        var orders = await _orderService.GetOrdersByUserId(userId);
+        return Ok(orders);
+    }
+
 
     // GET: api/order/{id}
     [HttpGet("{id}")]
@@ -37,11 +46,15 @@ public class OrderController : ControllerBase
 
     // POST: api/order
     [HttpPost]
-    public async Task<IActionResult> AddOrder([FromBody] CreateOrderRequest createOrderRequest)
+    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequest createOrderRequest)
     {
-        var newOrderId = await _orderService.AddOrderAsync(createOrderRequest);
-        return CreatedAtAction(nameof(GetOrderById), new { id = newOrderId }, createOrderRequest);
+        var order = await _orderService.AddOrderAsync(createOrderRequest);
+        if (order == null)
+            return BadRequest("Не удалось создать заказ.");
+
+        return Ok(order);
     }
+
 
     // PUT: api/order/{id}
     [HttpPut("{id}")]

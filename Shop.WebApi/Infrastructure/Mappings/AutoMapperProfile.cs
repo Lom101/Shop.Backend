@@ -16,6 +16,7 @@ using Shop.WebAPI.Dtos.Model.Request;
 using Shop.WebAPI.Dtos.Model.Response;
 using Shop.WebAPI.Dtos.Order.Requests;
 using Shop.WebAPI.Dtos.Order.Responses;
+using Shop.WebAPI.Dtos.OrderItem;
 using Shop.WebAPI.Dtos.OrderItem.Responses;
 using Shop.WebAPI.Dtos.Photo.Responses;
 using Shop.WebAPI.Dtos.Product;
@@ -110,7 +111,30 @@ public class AutoMapperProfile : Profile
                 }
             });
         
-        CreateMap<Size, GetSizeResponse>();
+        CreateMap<Size, GetSizeResponse>()
+            .ForMember(m => m.StockQuantity, opt => opt.Ignore())
+            ;
+        
+        CreateMap<CreateAddressRequest, Address>()
+            .ForMember(pr => pr.Id, opt => opt.Ignore())
+            .ForMember(pr => pr.User, opt => opt.Ignore());
+
+        CreateMap<CreateOrderRequest, Order>()
+            .ForMember(pr => pr.Id, opt => opt.Ignore())
+            .ForMember(pr => pr.Created, opt => opt.Ignore())
+            .ForMember(pr => pr.TotalAmount, opt => opt.Ignore())
+            .ForMember(pr => pr.User, opt => opt.Ignore())
+            .ForMember(pr => pr.ShippingAddress, opt => opt.Ignore()); // 
+
+        CreateMap<CreateOrderItemRequest, OrderItem>()
+            .ForMember(pr => pr.Id, opt => opt.Ignore())
+            .ForMember(pr => pr.Amount, opt => opt.Ignore()) //
+            .ForMember(pr => pr.OrderId, opt => opt.Ignore()) //
+            .ForMember(pr => pr.Order, opt => opt.Ignore())
+            .ForMember(pr => pr.Model, opt => opt.Ignore())
+            .ForMember(pr => pr.Size, opt => opt.Ignore())
+            ;
+        
         CreateMap<Photo, GetPhotoResponse>()
             .ForMember(pr => pr.Url, opt => opt.Ignore());
         CreateMap<Brand, GetBrandResponse>();

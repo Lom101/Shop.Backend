@@ -48,4 +48,9 @@ public class AddressRepository : IAddressRepository
             await _context.SaveChangesAsync();
         }
     }
+
+    public async Task<IEnumerable<Address>> GetAddressesByUserIdAsync(string userId)
+    {
+        return await _context.Addresses.Where(a => a.UserId == userId).ToListAsync();
+    }
 }

@@ -18,4 +18,6 @@ public class OrderItem
 
     public int SizeId { get; set; }
     public Size Size { get; set; }
+    
+    public decimal TotalPrice => (decimal)Amount * Quantity;
 }

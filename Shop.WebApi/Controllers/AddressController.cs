@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Address.Requests;
 using Shop.WebAPI.Services.Interfaces;
 
@@ -9,9 +10,11 @@ namespace Shop.WebAPI.Controllers;
 public class AddressController : ControllerBase
 {
     private readonly IAddressService _addressService;
+    private readonly UserManager<IdentityUser> _userManager;
 
-    public AddressController(IAddressService addressService)
+    public AddressController(IAddressService addressService, UserManager<IdentityUser> userManager)
     {
+        _userManager = userManager;
         _addressService = addressService;
     }
 
@@ -20,6 +23,14 @@ public class AddressController : ControllerBase
     public async Task<IActionResult> GetAllAddresses()
     {
         var addresses = await _addressService.GetAllAddressesAsync();
+        return Ok(addresses);
+    }
+    
+    // GET: api/address/
+    [HttpGet("get_by_user_id")]
+    public async Task<IActionResult> GetAddressesByUserId(string userId)
+    {
+        var addresses = await _addressService.GetAddressesByUserId(userId);
         return Ok(addresses);
     }
 
@@ -39,6 +50,12 @@ public class AddressController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddAddress([FromBody] CreateAddressRequest createAddressRequest)
     {
+        var userExists = await _userManager.FindByIdAsync(createAddressRequest.UserId);
+        if (userExists == null)
+        {
+            return BadRequest("Пользователь не найден.");
+        }
+        
         var newAddressId = await _addressService.AddAddressAsync(createAddressRequest);
         return CreatedAtAction(nameof(GetAddressById), new { id = newAddressId }, createAddressRequest);
     }

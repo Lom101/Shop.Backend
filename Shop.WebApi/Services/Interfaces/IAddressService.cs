@@ -10,4 +10,5 @@ public interface IAddressService
     Task<int> AddAddressAsync(CreateAddressRequest addressDto);
     Task<bool> UpdateAddressAsync(UpdateAddressRequest addressDto);
     Task<bool> DeleteAddressAsync(int id);
+    Task<IEnumerable<GetAddressResponse>> GetAddressesByUserId(string userId);
 }

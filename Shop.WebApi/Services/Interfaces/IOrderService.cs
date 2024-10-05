@@ -10,4 +10,5 @@ public interface IOrderService
     Task<int> AddOrderAsync(CreateOrderRequest orderDto);
     Task<bool> UpdateOrderAsync(UpdateOrderRequest orderDto);
     Task<bool> DeleteOrderAsync(int id);
+    Task<IEnumerable<GetOrderResponse>> GetOrdersByUserId(string userId);
 }

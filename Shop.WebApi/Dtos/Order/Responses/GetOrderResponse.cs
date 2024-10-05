@@ -14,5 +14,7 @@ public class GetOrderResponse
     public string UserId { get; set; }
     public GetApplicationUserResponse User { get; set; }
     
+    public int AddressId { get; set; } // ID адреса доставки
+    public string ContactPhone { get; set; } // Контактный телефон
     public IEnumerable<GetOrderItemResponse> OrderItems { get; set; }
 }

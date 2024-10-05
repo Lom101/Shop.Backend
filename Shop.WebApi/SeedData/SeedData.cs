@@ -613,29 +613,31 @@ public class SeedData
     }
 
     private static async Task EnsureOrdersExistAsync(ShopApplicationContext context)
-    {
+{
     if (!context.Orders.Any())
     {
         var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
-        
+
+        // Получаем адрес пользователя для использования в заказах
+        var address = await context.Addresses.FirstOrDefaultAsync(a => a.UserId == user.Id);
+
         // Извлекаем модели вместе с размерами через ModelSize
         var model1 = await context.Models
             .Include(m => m.ModelSizes)
-                .ThenInclude(ms => ms.Size) // Включаем связанные размеры через ModelSize
+                .ThenInclude(ms => ms.Size)
             .FirstOrDefaultAsync(m => m.ProductId == 1);
 
         var model2 = await context.Models
             .Include(m => m.ModelSizes)
-                .ThenInclude(ms => ms.Size) // Включаем связанные размеры через ModelSize
+                .ThenInclude(ms => ms.Size)
             .FirstOrDefaultAsync(m => m.ProductId == 2);
 
         if (model1 != null && model2 != null && model1.ModelSizes.Any() && model2.ModelSizes.Any())
         {
-            // Предположим, что для каждой модели мы берем первый доступный размер
-            var size1 = model1.ModelSizes.FirstOrDefault()?.Size; // Размер через ModelSize
-            var size2 = model2.ModelSizes.FirstOrDefault()?.Size; // Размер через ModelSize
+            var size1 = model1.ModelSizes.FirstOrDefault()?.Size;
+            var size2 = model2.ModelSizes.FirstOrDefault()?.Size;
 
-            if (size1 != null && size2 != null)
+            if (size1 != null && size2 != null && address != null)
             {
                 var orders = new List<Order>
                 {
@@ -645,6 +647,9 @@ public class SeedData
                         Created = DateTime.UtcNow,
                         Status = OrderStatus.Processed,
                         TotalAmount = 300,
+                        PaymentIntentId = "pi_1GqjYf2eZvKYlo2C8p1JQY1M", // Пример ID платежного намерения
+                        AddressId = address.Id, // Связываем с адресом
+                        ContactPhone = "123-456-7890", // Пример контактного телефона
                         OrderItems = new List<OrderItem>
                         {
                             new OrderItem
@@ -652,14 +657,14 @@ public class SeedData
                                 ModelId = model1.Id,
                                 Quantity = 1,
                                 Amount = model1.Price,
-                                SizeId = size1.Id // Берем SizeId из связанного размера
+                                SizeId = size1.Id
                             },
                             new OrderItem
                             {
                                 ModelId = model2.Id,
                                 Quantity = 2,
                                 Amount = model2.Price,
-                                SizeId = size2.Id // Берем SizeId из связанного размера
+                                SizeId = size2.Id
                             }
                         }
                     }

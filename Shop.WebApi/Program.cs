@@ -15,6 +15,8 @@ using Shop.WebAPI.Repository.Interfaces;
 using Shop.WebAPI.SeedData;
 using Shop.WebAPI.Services;
 using Shop.WebAPI.Services.Interfaces;
+using Stripe;
+using ProductService = Shop.WebAPI.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +37,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ShopApplicationContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 # region Auth
 
@@ -87,6 +92,7 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 
 #region Services and repositories
 
+
 builder.Services.AddTransient<ICategoryService, CategoryService>();
 builder.Services.AddTransient<IProductService, ProductService>();
 builder.Services.AddTransient<IAddressService, AddressService>();
@@ -136,3 +142,18 @@ app.MapControllers();
 
 
 app.Run();
+
+// {
+//     "userId": "a19e87ed-dd9f-4953-bf54-a86dd8abf08c",
+//     "status": 1,
+//     "paymentIntentId": "string",
+//     "addressId": 1,
+//     "contactPhone": "string",
+//     "items": [
+//     {
+//         "modelId": 1,
+//         "sizeId": 1,
+//         "quantity": 1
+//     }
+//     ]
+// }

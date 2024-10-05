@@ -7,21 +7,15 @@ namespace Shop.WebAPI.Dtos.Order.Requests;
 
 public class CreateOrderRequest
 {
-    public int UserId { get; set; }
-    
+    public string UserId { get; set; }
     public OrderStatus Status { get; set; }
     
-    public ICollection<CreateOrderItemRequest> Items { get; set; }
+    public string PaymentIntentId { get; set; } // ID платежного намерения Stripe
+    public int AddressId { get; set; } // ID адреса доставки
+    public string ContactPhone { get; set; } // Контактный телефон
+    
+    public ICollection<CreateOrderItemRequest> OrderItems { get; set; }
     
 }
 
 //public ShippingMethods ShippingMethod { get; set; }
-
-
-// public DateTime Created { get; set; }
-// public OrderStatus Status { get; set; }
-// public decimal TotalAmount { get; set; }
-//
-// public string UserId { get; set; }
-//
-// public IEnumerable<GetOrderItemResponse> OrderItems { get; set; }

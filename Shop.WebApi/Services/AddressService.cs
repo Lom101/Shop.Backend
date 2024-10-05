@@ -58,4 +58,10 @@ public class AddressService : IAddressService
         await _addressRepository.DeleteAsync(id);
         return true;
     }
+
+    public async Task<IEnumerable<GetAddressResponse>> GetAddressesByUserId(string userId)
+    {
+        var addresses = await _addressRepository.GetAddressesByUserIdAsync(userId);
+        return _mapper.Map<IEnumerable<GetAddressResponse>>(addresses);
+    }
 }

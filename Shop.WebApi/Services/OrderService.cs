@@ -30,14 +30,25 @@ namespace Shop.WebAPI.Services
             return _mapper.Map<GetOrderResponse>(order);
         }
 
+
         public async Task<int> AddOrderAsync(CreateOrderRequest request)
         {
+            // Логика для создания заказа
+            
+            // var order = new Order
+            // {
+            //     UserId = orderRequest.UserId,
+            //     Items = orderRequest.Items,
+            //     TotalAmount = orderRequest.TotalAmount,
+            //     CreatedAt = DateTime.UtcNow,
+            // };
+            
             var order = _mapper.Map<Order>(request);
-            order.Created = DateTime.UtcNow;
             await _orderRepository.AddAsync(order);
             return order.Id;
         }
 
+        
         public async Task<bool> UpdateOrderAsync(UpdateOrderRequest request)
         {
             var order = await _orderRepository.GetByIdAsync(request.Id);
@@ -55,6 +66,12 @@ namespace Shop.WebAPI.Services
 
             await _orderRepository.DeleteAsync(id);
             return true;
+        }
+
+        public async Task<IEnumerable<GetOrderResponse>> GetOrdersByUserId(string userId)
+        {
+            var orders = await _orderRepository.GetByUserId(userId);
+            return _mapper.Map<IEnumerable<GetOrderResponse>>(orders);
         }
     }
 }

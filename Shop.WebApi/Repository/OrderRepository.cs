@@ -5,7 +5,7 @@ using Shop.WebAPI.Repository.Interfaces;
 
 namespace Shop.WebAPI.Repositories
 {
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : IOrderRepository 
     {
         private readonly ShopApplicationContext _context;
 
@@ -17,18 +17,16 @@ namespace Shop.WebAPI.Repositories
         public async Task<Order> GetByIdAsync(int id)
         {
             return await _context.Orders
-                // .Include(o => o.OrderItems)
-                // .ThenInclude(oi => oi.Model)
-                // .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Model)
                 .FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<IEnumerable<Order>> GetAllAsync()
         {
             return await _context.Orders
-                // .Include(o => o.OrderItems)
-                // .ThenInclude(oi => oi.Model)
-                // .Include(o => o.User)
+                .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Model)
                 .ToListAsync();
         }
 
@@ -52,6 +50,22 @@ namespace Shop.WebAPI.Repositories
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<Order>> GetByUserId(string userId)
+        {
+            return await _context.Orders
+                .Include(o => o.ShippingAddress)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Model)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Size)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Model).ThenInclude(m => m.Color)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Model).ThenInclude(m => m.Photos)
+
+                // .Include(p => p.Models).ThenInclude(m => m.Color)
+                // .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
+                // .Include(p => p.Models).ThenInclude(m => m.Photos)
+                .Where(o => o.UserId == userId)
+                .ToListAsync();
         }
     }
 }
