@@ -7,7 +7,8 @@ public class Order
     public int Id { get; set; }
     public DateTime Created { get; set; }
     public OrderStatus Status { get; set; }
-    public decimal TotalAmount { get; set; }
+    // Вычисляемое свойство TotalAmount
+    public decimal? TotalAmount => (decimal)OrderItems.Sum(item => item.Amount * item.Quantity);
     
     
     public string UserId { get; set; }

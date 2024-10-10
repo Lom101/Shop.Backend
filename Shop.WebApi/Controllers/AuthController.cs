@@ -17,12 +17,14 @@ public class AuthController : ControllerBase
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IJwtService _jwtService;
+    private readonly IEmailSender _emailSender;
 
-    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IJwtService jwtService)
+    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IJwtService jwtService, IEmailSender emailSender)
     {
         _userManager = userManager;
         _roleManager = roleManager;
         _jwtService = jwtService;
+        _emailSender = emailSender;
     }
 
     [HttpPost("registration")]
@@ -151,5 +153,66 @@ public class AuthController : ControllerBase
 
 
 
+    }
+    
+    // Step 1: Generate and send the password reset token
+    [HttpPost("forgot_password")]
+    public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { Success = false, Errors = new List<string> { "Invalid model" } });
+        }
+
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            return BadRequest(new { Success = false, Errors = new List<string> { "Email not registered" } });
+        }
+
+        // Генерируем код (например, 6 цифр)
+        var resetCode = new Random().Next(100000, 999999).ToString();
+        // Сохраняем код (например, в БД или временном хранилище)
+        await _userManager.SetAuthenticationTokenAsync(user, "ResetPassword", "PasswordResetCode", resetCode);
+        // Отправляем код на почту
+        var emailContent = $"Your password reset code is {resetCode}";
+        
+        
+        await _emailSender.SendEmailAsync(model.Email, "Password Reset", emailContent);
+
+        return Ok(new { Success = true, Message = "Password reset link sent to email" });
+    }
+    
+    // Step 2: Verify the token and reset the password
+    [HttpPost("reset_password")]
+    public async Task<IActionResult> ResetPassword(ResetPasswordDTO model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new { Success = false, Errors = new List<string> { "Invalid model" } });
+        }
+        
+        var user = await _userManager.FindByEmailAsync(model.Email);
+        if (user == null)
+        {
+            return BadRequest(new { Success = false, Errors = new List<string> { "Invalid email" } });
+        }
+        
+        // Получаем сохраненный код
+        var savedCode = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "PasswordResetCode");
+        if (savedCode != model.Code)
+            return BadRequest("Invalid reset code.");
+
+
+        // создаем токен для смены пароля(типо костыль, а может и норм)
+        var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+        // Reset the user's password
+        var result = await _userManager.ResetPasswordAsync(user, resetToken, model.NewPassword);
+        if (!result.Succeeded)
+        {
+            return BadRequest(new { Success = false, Errors = result.Errors.Select(e => e.Description).ToList() });
+        }
+
+        return Ok(new { Success = true, Message = "Password has been reset successfully" });
     }
 }

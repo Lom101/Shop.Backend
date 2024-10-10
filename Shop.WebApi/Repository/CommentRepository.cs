@@ -22,8 +22,15 @@ public class CommentRepository : ICommentRepository
             .Any(oi => oi.Order.UserId == userId && oi.Model.ProductId == productId);
 
         return hasOrderWithProduct;
-    }    
-    
+    }
+
+    public async Task<IEnumerable<Comment>> GetByUserId(string userId)
+    {
+        return await _context.Comments.
+            Where(c => c.UserId == userId).
+            ToListAsync();
+    }
+
     public async Task<IEnumerable<Comment>> GetAllAsync()
     {
         // return await _context.Comments.Include(c => c.Product)

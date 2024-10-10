@@ -11,4 +11,5 @@ public interface ICommentService
     Task<bool> UpdateCommentAsync(UpdateCommentRequest commentDto);
     Task<bool> DeleteCommentAsync(int id);
     bool CanUserLeaveReview(string userId, int productId);
+    Task<IEnumerable<GetCommentResponse>> GetCommentsByUserId(string userId);
 }

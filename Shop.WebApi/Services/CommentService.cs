@@ -64,4 +64,10 @@ public class CommentService : ICommentService
     {
         return _commentRepository.CanUserLeaveReview(userId, productId);
     }
+
+    public async Task<IEnumerable<GetCommentResponse>> GetCommentsByUserId(string userId)
+    {
+        var comments = await _commentRepository.GetByUserId(userId);
+        return _mapper.Map<IEnumerable<GetCommentResponse>>(comments);
+    }
 }

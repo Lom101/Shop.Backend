@@ -563,19 +563,13 @@ public class SeedData
                 new Address
                 {
                     Id = 1,
-                    Street = "123 Main St",
-                    City = "Anytown",
-                    State = "CA",
-                    ZipCode = "12345",
+                    AddressName = "123 Main St",
                     UserId = user.Id
                 },
                 new Address
                 {
                     Id = 2,
-                    Street = "456 Elm Ave",
-                    City = "Othertown",
-                    State = "NY",
-                    ZipCode = "67890",
+                    AddressName = "456 Elm Ave",
                     UserId = user.Id
                 }
             );
@@ -646,7 +640,6 @@ public class SeedData
                         UserId = user.Id,
                         Created = DateTime.UtcNow,
                         Status = OrderStatus.Processed,
-                        TotalAmount = 300,
                         PaymentIntentId = "pi_1GqjYf2eZvKYlo2C8p1JQY1M", // Пример ID платежного намерения
                         AddressId = address.Id, // Связываем с адресом
                         ContactPhone = "123-456-7890", // Пример контактного телефона

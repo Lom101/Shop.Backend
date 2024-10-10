@@ -25,6 +25,7 @@ using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Dtos.Size.Responses;
 using Shop.WebAPI.Dtos.User.Responses;
 using Shop.WebAPI.Entities;
+using CreateOrderRequest = Shop.WebAPI.Dtos.Order.Requests.CreateOrderRequest;
 
 namespace Shop.WebAPI.Infrastructure.Mappings;
 
@@ -37,17 +38,19 @@ public class AutoMapperProfile : Profile
         CreateMap<Model, GetModelResponse>()
             .ForMember(dest => dest.Sizes, opt
                 => opt.MapFrom(src => src.ModelSizes.Select(ms => ms.Size)))
-            .ForMember(dest => dest.IsAvailable, opt 
+            .ForMember(dest => dest.IsAvailable, opt
                 => opt.MapFrom(src => src.IsAvailable))
-            .ForMember(dest => dest.IsAvailable, opt 
+            .ForMember(dest => dest.IsAvailable, opt
                 => opt.MapFrom(src => src.ModelSizes.Any(ms => ms.StockQuantity > 0)))
-            .ForMember(dest => dest.Sizes, opt => 
+            .ForMember(dest => dest.Sizes, opt =>
                 opt.MapFrom(src => src.ModelSizes.Select(ms => new GetSizeResponse
                 {
                     Id = ms.Size.Id,
                     Name = ms.Size.Name,
                     StockQuantity = ms.StockQuantity // Include stock quantity here
-                }).ToList()));
+                }).ToList()))
+            .ForMember(dest => dest.Name, opt
+                => opt.MapFrom(src => src.Product.Name));
         
         CreateMap<CreateModelRequest, Model>()
             .ForMember(dest => dest.Id, opt => opt.Ignore())
@@ -136,7 +139,9 @@ public class AutoMapperProfile : Profile
             ;
         
         CreateMap<Photo, GetPhotoResponse>()
-            .ForMember(pr => pr.Url, opt => opt.Ignore());
+            .ForMember(pr => pr.Url, opt 
+                => opt.MapFrom(pr => $"images/{pr.FileName}"));
+        
         CreateMap<Brand, GetBrandResponse>();
         CreateMap<OrderItem, GetOrderItemResponse>();
         

@@ -6,7 +6,8 @@ public class Model
 {
     public int Id { get; set; }
     public double Price { get; set; }
-
+   
+    
     public int ProductId { get; set; }
     public Product Product { get; set; }
     
@@ -17,7 +18,7 @@ public class Model
     public ICollection<ModelSize> ModelSizes { get; set; }
     public ICollection<Photo> Photos { get; set; }
     
-    public bool IsAvailable => ModelSizes.Any(size => size.StockQuantity > 0);
+   public bool IsAvailable => ModelSizes.Any(size => size.StockQuantity > 0);
     
     public Model()
     {

@@ -16,7 +16,8 @@ public class GetModelResponse
     public GetColorResponse Color { get; set; }
     
     public bool IsAvailable { get; set; } // Это свойство будет возвращать true, если у модели есть хотя бы один доступный размер
-    
+    public string Name { get; set; }
+
     public ICollection<GetSizeResponse> Sizes { get; set; }
     public ICollection<GetPhotoResponse> Photos { get; set; }
 }

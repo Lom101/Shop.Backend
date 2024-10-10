@@ -26,7 +26,7 @@ public class AddressController : ControllerBase
         return Ok(addresses);
     }
     
-    // GET: api/address/
+    // GET: api/address/get_by_user_id
     [HttpGet("get_by_user_id")]
     public async Task<IActionResult> GetAddressesByUserId(string userId)
     {
@@ -66,7 +66,7 @@ public class AddressController : ControllerBase
     {
         if (id != updateAddressRequest.Id)
         {
-            return BadRequest("address ID mismatch");
+            return BadRequest("Несоответствие Id адреса");
         }
 
         var isUpdated = await _addressService.UpdateAddressAsync(updateAddressRequest);

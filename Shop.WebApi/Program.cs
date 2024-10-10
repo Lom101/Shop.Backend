@@ -103,6 +103,8 @@ builder.Services.AddTransient<IColorService, ColorService>();
 builder.Services.AddTransient<IModelService, ModelService>();
 builder.Services.AddTransient<ISizeService, SizeService>();
 
+builder.Services.AddTransient<IEmailSender, EmailSender>();
+
 
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();

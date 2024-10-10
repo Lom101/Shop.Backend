@@ -15,4 +15,9 @@ public class Comment
     public Product Product { get; set; }
     public string UserId { get; set; }
     public ApplicationUser User { get; set; }
+
+    public Comment()
+    {
+        Created = DateTime.UtcNow;
+    }
 }

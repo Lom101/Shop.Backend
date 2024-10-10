@@ -60,6 +60,7 @@ namespace Shop.WebAPI.Repositories
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.Size)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.Model).ThenInclude(m => m.Color)
                 .Include(o => o.OrderItems).ThenInclude(oi => oi.Model).ThenInclude(m => m.Photos)
+                .Include(o => o.OrderItems).ThenInclude(oi => oi.Model).ThenInclude(m => m.Product)
 
                 // .Include(p => p.Models).ThenInclude(m => m.Color)
                 // .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
