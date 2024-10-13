@@ -69,6 +69,8 @@ builder.Services.AddDbContext<ShopApplicationContext>(options =>
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
+builder.Services.Configure<SmtpServerSettings>(builder.Configuration.GetSection("SmtpServerSettings"));
+
 # region Auth
 
 //JWT Config

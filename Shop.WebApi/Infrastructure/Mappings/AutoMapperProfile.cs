@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using Shop.WebAPI.Dtos;
-using Shop.WebAPI.Dtos.Address;
 using Shop.WebAPI.Dtos.Address.Requests;
 using Shop.WebAPI.Dtos.Address.Responses;
-using Shop.WebAPI.Dtos.Brand;
 using Shop.WebAPI.Dtos.Brand.Response;
-using Shop.WebAPI.Dtos.Category;
 using Shop.WebAPI.Dtos.Category.Requests;
 using Shop.WebAPI.Dtos.Category.Responses;
 using Shop.WebAPI.Dtos.Color.Responses;
@@ -16,14 +12,11 @@ using Shop.WebAPI.Dtos.Order.Responses;
 using Shop.WebAPI.Dtos.OrderItem;
 using Shop.WebAPI.Dtos.OrderItem.Responses;
 using Shop.WebAPI.Dtos.Photo.Responses;
-using Shop.WebAPI.Dtos.Product;
-using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Dtos.Review.Responses;
 using Shop.WebAPI.Dtos.Size.Responses;
 using Shop.WebAPI.Dtos.User.Responses;
 using Shop.WebAPI.Entities;
-using CreateOrderRequest = Shop.WebAPI.Dtos.Order.Requests.CreateOrderRequest;
 
 namespace Shop.WebAPI.Infrastructure.Mappings;
 
@@ -131,8 +124,6 @@ public class AutoMapperProfile : Profile
         #endregion
 
         #region Order
-
-        CreateMap<CreateOrderRequest, Order>();
         CreateMap<Order, GetOrderResponse>();
         #endregion
 
