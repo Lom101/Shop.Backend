@@ -16,7 +16,7 @@ public class Product
     public Brand Brand { get; set; }
     
     public ICollection<Model> Models { get; set; }
-    public ICollection<Comment> Comments { get; set; } // отзывы 
+    public ICollection<Review> Comments { get; set; }
     
     // В наличие на складе, если есть хоть одна доступная модель на складе
     public bool IsAvailable => Models.Any(m => m.IsAvailable == true); 
@@ -25,9 +25,6 @@ public class Product
     {
         Created = DateTime.Now;
         Models = new Collection<Model>();
-        Comments = new Collection<Comment>();
+        Comments = new Collection<Review>();
     }
 }
-
-
-// public string Material { get; set; } // Материал

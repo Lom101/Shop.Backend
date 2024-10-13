@@ -7,7 +7,6 @@ public class Order
     public int Id { get; set; }
     public DateTime Created { get; set; }
     public OrderStatus Status { get; set; }
-    // Вычисляемое свойство TotalAmount
     public decimal? TotalAmount => (decimal)OrderItems.Sum(item => item.Amount * item.Quantity);
     
     
@@ -15,10 +14,9 @@ public class Order
     public ApplicationUser User { get; set; }
     
     public string PaymentIntentId { get; set; } // ID платежного намерения Stripe
-    // Связь с адресом доставки
     public int AddressId { get; set; }
-    public Address ShippingAddress { get; set; } // Адрес доставки
-    public string ContactPhone { get; set; } // Контактный телефон
+    public Address ShippingAddress { get; set; } 
+    public string ContactPhone { get; set; } 
     
     public ICollection<OrderItem> OrderItems { get; set; }
 

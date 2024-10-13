@@ -18,7 +18,7 @@ public class PhotoService : IPhotoService
 
     public async Task<GetPhotoResponse> UploadPhotoAsync(CreatePhotoRequest request)
     {
-        var model = await _modelRepository.GetByIdAsync(request.ModelId);
+        var model = await _modelRepository.GetModelByIdAsync(request.ModelId);
         if (model == null) return null;
 
         var photo = await _photoRepository.UploadPhoto(model, request.File);
@@ -33,7 +33,7 @@ public class PhotoService : IPhotoService
 
     public async Task<GetPhotoResponse?> UpdatePhotoAsync(UpdatePhotoRequest request)
     {
-        var model = await _modelRepository.GetByIdAsync(request.ModelId);
+        var model = await _modelRepository.GetModelByIdAsync(request.ModelId);
         if (model == null) return null;
 
         var photo = await _photoRepository.GetPhotoByIdAsync(request.Id);

@@ -2,8 +2,8 @@
 using Shop.WebAPI.Dtos.Brand.Response;
 using Shop.WebAPI.Dtos.Category;
 using Shop.WebAPI.Dtos.Category.Responses;
-using Shop.WebAPI.Dtos.Comment.Responses;
 using Shop.WebAPI.Dtos.Model.Response;
+using Shop.WebAPI.Dtos.Review.Responses;
 using Shop.WebAPI.Dtos.Size.Responses;
 
 namespace Shop.WebAPI.Dtos.Product.Responses;
@@ -28,6 +28,6 @@ public class GetProductResponse
     public GetBrandResponse Brand { get; set; }
     
     public ICollection<GetModelResponse> Models { get; set; }
-    public List<GetCommentResponse> Comments { get; set; }
+    public List<GetReviewResponse> Comments { get; set; }
     
 }

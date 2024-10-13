@@ -60,7 +60,7 @@ public class AuthController : ControllerBase
 
                 await _userManager.AddToRoleAsync(newUser, "User");
                 AuthResult authResult = await _jwtService.GenerateToken(newUser);
-                //return a token
+                // Return a token
                 return Ok(authResult);
             }
             else
@@ -139,10 +139,8 @@ public class AuthController : ControllerBase
 
             var tokenUser = await _userManager.FindByIdAsync(verified.UserId);
             AuthResult authResult = await _jwtService.GenerateToken(tokenUser);
-            //return a token
+            // Return a token
             return Ok(authResult);
-
-
         }
 
         return BadRequest(new AuthResult()
@@ -150,9 +148,6 @@ public class AuthController : ControllerBase
             Errors = new List<string> { "invalid Payload" },
             Success = false
         });
-
-
-
     }
     
     // Step 1: Generate and send the password reset token
@@ -202,8 +197,7 @@ public class AuthController : ControllerBase
         var savedCode = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "PasswordResetCode");
         if (savedCode != model.Code)
             return BadRequest("Invalid reset code.");
-
-
+        
         // создаем токен для смены пароля(типо костыль, а может и норм)
         var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
         // Reset the user's password

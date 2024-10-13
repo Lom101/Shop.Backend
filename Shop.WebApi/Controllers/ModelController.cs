@@ -1,81 +1,96 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Model.Request;
-using Shop.WebAPI.Services.Interfaces;
+using Shop.WebAPI.Dtos.Model.Response;
+using Shop.WebAPI.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Shop.WebAPI.Repository.Interfaces;
 
-namespace Shop.WebAPI.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class ModelController : ControllerBase
+namespace Shop.WebAPI.Controllers
 {
-    private readonly IModelService _modelService;
-    
-    public ModelController(IModelService modelService)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ModelController : ControllerBase
     {
-        _modelService = modelService;
-    }
+        private readonly IModelRepository _modelRepository;
+        private readonly IMapper _mapper;
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetModelById(int id)
-    {
-        var model = await _modelService.GetModelByIdAsync(id);
-        if (model == null)
+        public ModelController(IModelRepository modelRepository, IMapper mapper)
         {
-            return NotFound();
-        }
-        return Ok(model);
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAllModels()
-    {
-        var models = await _modelService.GetAllModelsAsync();
-        return Ok(models);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateModel(CreateModelRequest request)
-    {
-        var newModelId = await _modelService.AddModelAsync(request);
-        
-        if (newModelId == 0)
-        {
-            return BadRequest();  // If something goes wrong in creation
+            _modelRepository = modelRepository;
+            _mapper = mapper;
         }
 
-        return CreatedAtAction(nameof(GetModelById), new { id = newModelId }, request);
-
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateModel(int id, UpdateModelRequest request)
-    {
-        if (id != request.Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetModelById(int id)
         {
-            return BadRequest("Model ID mismatch");
+            var model = await _modelRepository.GetModelByIdAsync(id);
+            if (model == null)
+            {
+                return NotFound("Модель не найдена.");
+            }
+
+            var modelResponse = _mapper.Map<GetModelResponse>(model);
+            return Ok(modelResponse);
         }
 
-        var result = await _modelService.UpdateModelAsync(request);
-    
-        if (!result)
+        [HttpGet]
+        public async Task<IActionResult> GetAllModels()
         {
-            return NotFound(); // Вернуть 404, если модель не найдена
+            var models = await _modelRepository.GetAllModelsAsync();
+            var modelResponses = _mapper.Map<IEnumerable<GetModelResponse>>(models);
+            return Ok(modelResponses);
         }
 
-        return NoContent(); // Вернуть 204, если обновление прошло успешно
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteModel(int id)
-    {
-        var result = await _modelService.DeleteModelAsync(id);
-    
-        if (!result)
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateModel(CreateModelRequest request)
         {
-            return NotFound();  // Вернуть 404, если модель не найдена
+            var model = _mapper.Map<Model>(request);
+            var newModelId = await _modelRepository.AddModelAsync(model);
+
+            if (newModelId == 0)
+            {
+                return BadRequest("Не удалось создать модель.");
+            }
+
+            return CreatedAtAction(nameof(GetModelById), new { id = newModelId }, request);
         }
 
-        return NoContent(); // Вернуть 204, если удаление прошло успешно
-    }
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateModel(int id, UpdateModelRequest request)
+        {
+            if (id != request.Id)
+            {
+                return BadRequest("Несоответствие ID модели.");
+            }
 
+            var model = _mapper.Map<Model>(request);
+            var result = await _modelRepository.UpdateModelAsync(model);
+
+            if (!result)
+            {
+                return NotFound("Модель не найдена.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteModel(int id)
+        {
+            var result = await _modelRepository.DeleteModelAsync(id);
+
+            if (!result)
+            {
+                return NotFound("Модель не найдена.");
+            }
+
+            return NoContent();
+        }
+    }
 }

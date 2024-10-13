@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Shop.WebAPI.Data;
 using Shop.WebAPI.Dtos.Product.Requests;
-using Shop.WebAPI.Dtos.Product.Responses;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Repository.Interfaces;
 
@@ -40,7 +39,7 @@ public class ProductRepository : IProductRepository
             .Include(p => p.Comments) // Загружаем связанные комментарии
             .ToListAsync();
     }
-    
+
     public async Task<IEnumerable<Product>> GetFilteredProductsAsync(
         int? categoryId,
         int? brandId,
@@ -52,27 +51,20 @@ public class ProductRepository : IProductRepository
     )
     {
         var query = _context.Products
-            .Include(p => p.Category)  // Включаем категорию
-            .Include(p => p.Brand)     // Включаем бренд
-            .Include(p => p.Models)    // Включаем модели
-            .ThenInclude(m => m.Color)  // Включаем цвет модели
-            .Include(p => p.Models)
-            .ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)  // Включаем размеры моделей
-            .Include(p => p.Models)
-            .ThenInclude(m => m.Photos)  // Включаем фото моделей
-            .Include(p => p.Comments) // Загружаем связанные комментарии
+            .Include(p => p.Category)
+            .Include(p => p.Brand)
+            .Include(p => p.Models).ThenInclude(m => m.Color)
+            .Include(p => p.Models).ThenInclude(m => m.ModelSizes).ThenInclude(ms => ms.Size)
+            .Include(p => p.Models).ThenInclude(m => m.Photos)
+            .Include(p => p.Comments)
             .AsQueryable();
-    
-        
-        // Проверка categoryId
+
         if (categoryId.HasValue)
             query = query.Where(p => p.CategoryId == categoryId.Value);
 
-        // Проверка brandId
         if (brandId.HasValue)
             query = query.Where(p => p.BrandId == brandId.Value);
 
-        // Фильтрация по минимальной и максимальной цене
         if (minPrice.HasValue)
             query = query.Where(p => p.Models.Any(m => m.Price >= minPrice.Value));
 
@@ -83,20 +75,16 @@ public class ProductRepository : IProductRepository
             query = query.Where(p => p.Models.Any(m =>
                 m.ModelSizes.Any(ms => ms.StockQuantity > 0)) == inStock.Value);
 
-        // Фильтрация по размерам
         if (sizeIds != null && sizeIds.Any())
             query = query.Where(p => p.Models
                 .SelectMany(m => m.ModelSizes)
                 .Any(ms => sizeIds.Contains(ms.SizeId)));
 
-        // Фильтрация по цветам
         if (colorIds != null && colorIds.Any())
             query = query.Where(p => p.Models.Any(m => colorIds.Contains(m.ColorId)));
 
-       
-        return query;
+        return await query.ToListAsync();
     }
-
 
     public async Task AddAsync(Product? product)
     {
@@ -120,10 +108,9 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<IEnumerable<Category>> GetAvailableCategoriesAsync()
+    public async Task<IEnumerable<Category?>> GetAvailableCategoriesAsync()
     {
         return await _context.Categories.ToListAsync();
-
     }
 
     public async Task<IEnumerable<Brand>> GetAvailableBrandsAsync()
@@ -151,4 +138,3 @@ public class ProductRepository : IProductRepository
         return (decimal)await _context.Models.MaxAsync(m => m.Price);
     }
 }
-

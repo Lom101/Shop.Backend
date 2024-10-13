@@ -2,7 +2,6 @@
 
 namespace Shop.WebAPI.Entities;
 
-// таблица в которой находятся все элементы всех заказов
 public class OrderItem
 {
     public int Id { get; set; }

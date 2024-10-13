@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Shop.WebAPI.Services.Interfaces;
+using Shop.WebAPI.Repository.Interfaces;
+using System.Threading.Tasks;
 
 namespace Shop.WebAPI.Controllers;
 
@@ -7,24 +8,24 @@ namespace Shop.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class ColorController : ControllerBase
 {
-    private readonly IColorService _colorService;
+    private readonly IColorRepository _colorRepository;
 
-    public ColorController(IColorService colorService)
+    public ColorController(IColorRepository colorRepository)
     {
-        _colorService = colorService;
+        _colorRepository = colorRepository;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllColors()
     {
-        var colors = await _colorService.GetAllColorsAsync();
+        var colors = await _colorRepository.GetAllAsync();
         return Ok(colors);
     }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetColorById(int id)
     {
-        var color = await _colorService.GetColorByIdAsync(id);
+        var color = await _colorRepository.GetByIdAsync(id);
         if (color == null)
         {
             return NotFound();

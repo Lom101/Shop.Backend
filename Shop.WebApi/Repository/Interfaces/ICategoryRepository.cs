@@ -4,9 +4,10 @@ namespace Shop.WebAPI.Repository.Interfaces;
 
 public interface ICategoryRepository
 {
-    Task<Category> GetByIdAsync(int id);
     Task<IEnumerable<Category>> GetAllAsync();
-    Task AddAsync(Category category);
-    Task UpdateAsync(Category category);
-    Task DeleteAsync(int id);
+    Task<Category?> GetByIdAsync(int id);
+    Task<Category?> GetByNameAsync(string name);
+    Task<bool> AddAsync(Category category);
+    Task<bool> UpdateAsync(Category category);
+    Task<bool> DeleteAsync(int id);
 }

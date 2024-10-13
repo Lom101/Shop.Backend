@@ -38,7 +38,8 @@ public class JwtService : IJwtService
 
         var claims = new List<Claim>
         {
-            new Claim("Id", user.Id),
+            new Claim(ClaimTypes.NameIdentifier, user.Id), // Стандартный claim для идентификатора
+            new Claim("Id", user.Id), // Кастомный claim для дополнительного хранения
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
@@ -202,8 +203,7 @@ public class JwtService : IJwtService
 
         return datetimeVal;
     }
-
-
+    
     private string GetRandomString()
     {
         Random random = new Random();

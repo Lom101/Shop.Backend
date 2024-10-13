@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Photo.Requests;
 using Shop.WebAPI.Services.Interfaces;
 
@@ -15,7 +16,8 @@ public class PhotoController : ControllerBase
         _photoService = photoService;
     }
 
-    [HttpPost]
+    [HttpPost] 
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UploadPhoto([FromForm] CreatePhotoRequest request)
     {
         if (request.File == null || request.File.Length == 0)
@@ -35,6 +37,7 @@ public class PhotoController : ControllerBase
 
 
     [HttpPut("update")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdatePhoto([FromForm] UpdatePhotoRequest request)
     {
         var result = await _photoService.UpdatePhotoAsync(request);
@@ -47,6 +50,7 @@ public class PhotoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeletePhoto(int id)
     {
         var success = await _photoService.DeletePhotoAsync(id);

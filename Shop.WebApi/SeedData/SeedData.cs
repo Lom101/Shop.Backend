@@ -578,12 +578,12 @@ public class SeedData
     }
     private static async Task EnsureCommentsExistAsync(ShopApplicationContext context)
     {
-        if (!context.Comments.Any())
+        if (!context.Reviews.Any())
         {
             var user = await context.Users.FirstOrDefaultAsync(u => u.Email == "user@example.com");
 
-            context.Comments.AddRange(
-                new Comment
+            context.Reviews.AddRange(
+                new Review
                 {
                     Id = 1,
                     Text = "Great product! Fast shipping!",
@@ -592,7 +592,7 @@ public class SeedData
                     ProductId = 1,
                     UserId = user.Id
                 },
-                new Comment
+                new Review
                 {
                     Id = 2,
                     Text = "Good price for quality.",   

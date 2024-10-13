@@ -7,8 +7,8 @@ namespace Shop.WebAPI.Data
 {
     public class ShopApplicationContext : IdentityDbContext
     {
-        public DbSet<Product?> Products { get; set; }
-        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Review> Reviews { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         
@@ -20,7 +20,7 @@ namespace Shop.WebAPI.Data
         public DbSet<Model> Models { get; set; } 
         public DbSet<Photo> Photos { get; set; }
         
-        public DbSet<ModelSize> ModelSizes { get; set; } // в референс не был прописан
+        public DbSet<ModelSize> ModelSizes { get; set; }
 
         public ShopApplicationContext(DbContextOptions<ShopApplicationContext> options)
             : base(options)

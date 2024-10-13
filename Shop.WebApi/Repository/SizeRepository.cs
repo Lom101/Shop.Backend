@@ -14,13 +14,13 @@ public class SizeRepository : ISizeRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Size>> GetAllAsync()
+    public async Task<IEnumerable<Size>> GetAllSizesAsync()
     {
         return await _context.Sizes.ToListAsync();
     }
 
-    public async Task<Size> GetByIdAsync(int id)
+    public async Task<Size> GetSizeByIdAsync(int id)
     {
-        return await _context.Sizes.FindAsync(id);
+        return await _context.Sizes.FirstOrDefaultAsync(s => s.Id == id);
     }
 }

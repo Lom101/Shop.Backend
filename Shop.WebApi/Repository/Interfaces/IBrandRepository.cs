@@ -6,7 +6,7 @@ public interface IBrandRepository
 {
     Task<IEnumerable<Brand>> GetAllAsync();
     Task<Brand> GetByIdAsync(int id);
-    Task AddAsync(Brand brand);
-    Task UpdateAsync(Brand brand);
-    Task DeleteAsync(Brand brand);
+    Task<bool> AddAsync(Brand brand);
+    Task<bool> UpdateAsync(Brand brand);
+    Task<bool> DeleteAsync(int id);
 }

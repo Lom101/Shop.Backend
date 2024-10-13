@@ -1,7 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Address.Requests;
-using Shop.WebAPI.Services.Interfaces;
+using Shop.WebAPI.Dtos.Address.Responses;
+using Shop.WebAPI.Repository.Interfaces;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace Shop.WebAPI.Controllers;
 
@@ -9,83 +13,60 @@ namespace Shop.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class AddressController : ControllerBase
 {
-    private readonly IAddressService _addressService;
+    private readonly IAddressRepository _addressRepository;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IMapper _mapper;
 
-    public AddressController(IAddressService addressService, UserManager<IdentityUser> userManager)
+    public AddressController(
+        IAddressRepository addressRepository, 
+        UserManager<IdentityUser> userManager, 
+        IMapper mapper)
     {
+        _addressRepository = addressRepository;
         _userManager = userManager;
-        _addressService = addressService;
+        _mapper = mapper;
     }
 
-    // GET: api/address
-    [HttpGet]
-    public async Task<IActionResult> GetAllAddresses()
-    {
-        var addresses = await _addressService.GetAllAddressesAsync();
-        return Ok(addresses);
-    }
-    
-    // GET: api/address/get_by_user_id
-    [HttpGet("get_by_user_id")]
+    // GET: api/address/user/{userId}
+    [HttpGet("user/{userId}")]
+    [Authorize(Roles = "Admin")] 
     public async Task<IActionResult> GetAddressesByUserId(string userId)
     {
-        var addresses = await _addressService.GetAddressesByUserId(userId);
-        return Ok(addresses);
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            return NotFound("Пользователь не найден.");
+        }
+
+        var addresses = await _addressRepository.GetByUserIdAsync(userId);
+        if (!addresses.Any())
+        {
+            return NotFound("Адреса для пользователя не найдены.");
+        }
+
+        var mappedAddresses = _mapper.Map<IEnumerable<GetAddressResponse>>(addresses);
+        return Ok(mappedAddresses);
     }
 
-    // GET: api/address/{id}
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetAddressById(int id)
+    // GET: api/address/me
+    [HttpGet("me")]
+    [Authorize(Roles = "User,Admin")] 
+    public async Task<IActionResult> GetMyAddresses()
     {
-        var address = await _addressService.GetAddressByIdAsync(id);
-        if (address == null)
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(userId))
         {
-            return NotFound();
-        }
-        return Ok(address);
-    }
-
-    // POST: api/address
-    [HttpPost]
-    public async Task<IActionResult> AddAddress([FromBody] CreateAddressRequest createAddressRequest)
-    {
-        var userExists = await _userManager.FindByIdAsync(createAddressRequest.UserId);
-        if (userExists == null)
-        {
-            return BadRequest("Пользователь не найден.");
-        }
-        
-        var newAddressId = await _addressService.AddAddressAsync(createAddressRequest);
-        return CreatedAtAction(nameof(GetAddressById), new { id = newAddressId }, createAddressRequest);
-    }
-
-    // PUT: api/address/{id}
-    [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateAddress(int id, [FromBody] UpdateAddressRequest updateAddressRequest)
-    {
-        if (id != updateAddressRequest.Id)
-        {
-            return BadRequest("Несоответствие Id адреса");
+            return Unauthorized("Пользователь не авторизован.");
         }
 
-        var isUpdated = await _addressService.UpdateAddressAsync(updateAddressRequest);
-        if (!isUpdated)
+        var addresses = await _addressRepository.GetByUserIdAsync(userId);
+        if (addresses == null || !addresses.Any())
         {
-            return NotFound();
+            return NotFound("Для текущего пользователя адреса не найдены.");
         }
-        return NoContent();
+
+        var addressResponses = _mapper.Map<IEnumerable<GetAddressResponse>>(addresses);
+        return Ok(addressResponses);
     }
 
-    // DELETE: api/address/{id}
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> DeleteAddress(int id)
-    {
-        var isDeleted = await _addressService.DeleteAddressAsync(id);
-        if (!isDeleted)
-        {
-            return NotFound();
-        }
-        return NoContent();
-    }
 }

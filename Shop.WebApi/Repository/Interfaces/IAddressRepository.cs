@@ -4,10 +4,5 @@ namespace Shop.WebAPI.Repository.Interfaces;
 
 public interface IAddressRepository
 {
-    Task<Address> GetByIdAsync(int id);
-    Task<IEnumerable<Address>> GetAllAsync();
-    Task AddAsync(Address address);
-    Task UpdateAsync(Address address);
-    Task DeleteAsync(int id);
-    Task<IEnumerable<Address>> GetAddressesByUserIdAsync(string userId);
+    Task<IEnumerable<Address>> GetByUserIdAsync(string userId);
 }

@@ -1,29 +1,35 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Product.Requests;
-using Shop.WebAPI.Services.Interfaces;
+using Shop.WebAPI.Dtos.Product.Responses;
+using Shop.WebAPI.Entities;
+using Shop.WebAPI.Repository.Interfaces;
 
 namespace Shop.WebAPI.Controllers;
-
 
 [ApiController]
 [Route("api/[controller]")]
 public class ProductController : ControllerBase
 {
-    private readonly IProductService _productService;
+    private readonly IProductRepository _productRepository;
+    private readonly IMapper _mapper;
 
-    public ProductController(IProductService productService)
+    public ProductController(IProductRepository productRepository, IMapper mapper)
     {
-        _productService = productService;
+        _productRepository = productRepository;
+        _mapper = mapper;
     }
+
     // GET: api/products
     [HttpGet]
     public async Task<IActionResult> GetAllProducts()
     {
-        var products = await _productService.GetAllProductsAsync();
-        return Ok(products);
+        var products = await _productRepository.GetAllAsync();
+        var productDtos = _mapper.Map<IEnumerable<GetProductResponse>>(products);
+        return Ok(productDtos);
     }
-    
-    // эндпоинт который возвращает элементы с учетом пагинации и фильтрации (на определенную страницу и определенное количество)
+
+    // эндпоинт который возвращает элементы с учетом пагинации и фильтрации
     // GET: api/products/filteredPagedProducts
     [HttpGet("filtered_paged")]
     public async Task<IActionResult> GetFilteredPagedProducts(
@@ -37,55 +43,78 @@ public class ProductController : ControllerBase
         [FromQuery] List<int> sizeIds,
         [FromQuery] List<int> colorIds)
     {
-        var result = await _productService.GetFilteredPagedProductsAsync(
-            pageNumber, pageSize, categoryId, brandId, minPrice, maxPrice, inStock, sizeIds, colorIds);
-        return Ok(result);
+        var result = await _productRepository.GetFilteredProductsAsync(
+            categoryId, brandId, minPrice, maxPrice, inStock, sizeIds, colorIds);
+
+        // Пагинация
+        var totalCount = result.Count();
+        var filteredPagedProducts = result
+            .Skip((int)((pageNumber - 1) * pageSize))
+            .Take((int)pageSize)
+            .ToList();
+
+        return Ok(new { Items = filteredPagedProducts, TotalCount = totalCount });
     }
-    
+
     // Возвращаем все необходимые опции продукта (размеры, цвета и т.д.)
     // GET: api/products/options
     [HttpGet("filter_options")]
     public async Task<IActionResult> GetProductFilterOptionsAsync()
     {
-        var productOptions = await _productService.GetProductFilterOptionsAsync();
-        return Ok(productOptions);
+        var categories = await _productRepository.GetAvailableCategoriesAsync();
+        var brands = await _productRepository.GetAvailableBrandsAsync();
+        var sizes = await _productRepository.GetAvailableSizesAsync();
+        var colors = await _productRepository.GetAvailableColorsAsync();
+        var minPrice = await _productRepository.GetMinPriceAsync();
+        var maxPrice = await _productRepository.GetMaxPriceAsync();
+
+        return Ok(new
+        {
+            Categories = categories,
+            Brands = brands,
+            Sizes = sizes,
+            Colors = colors,
+            MinPrice = minPrice,
+            MaxPrice = maxPrice
+        });
     }
-    
-    
+
     // GET: api/products/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetProductById(int id)
     {
-        var product = await _productService.GetProductByIdAsync(id);
+        var product = await _productRepository.GetByIdAsync(id);
         if (product == null)
         {
             return NotFound();
         }
-        return Ok(product);
+        var productDto = _mapper.Map<GetProductResponse>(product); // Используем AutoMapper
+        return Ok(productDto);
     }
 
     // POST: api/products
     [HttpPost]
     public async Task<IActionResult> AddProduct([FromBody] CreateProductRequest createProductRequest)
     {
-        var newProductId = await _productService.AddProductAsync(createProductRequest);
-        return CreatedAtAction(nameof(GetProductById), new { id = newProductId }, createProductRequest);
+        var newProduct = _mapper.Map<Product>(createProductRequest);
+        await _productRepository.AddAsync(newProduct);
+        
+        var productDto = _mapper.Map<GetProductResponse>(newProduct); // Используем AutoMapper
+        return CreatedAtAction(nameof(GetProductById), new { id = newProduct.Id }, productDto);
     }
 
     // PUT: api/products/{id}
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateProduct(int id, [FromBody] UpdateProductRequest updateProductRequest)
     {
-        if (id != updateProductRequest.Id)
-        {
-            return BadRequest("product ID mismatch");
-        }
-
-        var isUpdated = await _productService.UpdateProductAsync(updateProductRequest);
-        if (!isUpdated)
+        var existingProduct = await _productRepository.GetByIdAsync(id);
+        if (existingProduct == null)
         {
             return NotFound();
         }
+
+        _mapper.Map(updateProductRequest, existingProduct); 
+        await _productRepository.UpdateAsync(existingProduct);
         return NoContent();
     }
 
@@ -93,11 +122,12 @@ public class ProductController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteProduct(int id)
     {
-        var isDeleted = await _productService.DeleteProductAsync(id);
-        if (!isDeleted)
+        var existingProduct = await _productRepository.GetByIdAsync(id);
+        if (existingProduct == null)
         {
             return NotFound();
         }
+        await _productRepository.DeleteAsync(id);
         return NoContent();
     }
 }

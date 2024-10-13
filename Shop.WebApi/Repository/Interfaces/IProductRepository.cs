@@ -10,7 +10,7 @@ namespace Shop.WebAPI.Repository.Interfaces;
 
 public interface IProductRepository
 {
-    Task<Product?> GetByIdAsync(int id);
+    Task<Product> GetByIdAsync(int id);
     Task<IEnumerable<Product>> GetAllAsync();
     Task<IEnumerable<Product>> GetFilteredProductsAsync(
         int? categoryId,
@@ -20,8 +20,8 @@ public interface IProductRepository
         bool? inStock,
         [FromQuery] List<int> sizeIds,
         [FromQuery] List<int> colorIds);
-    Task AddAsync(Product? product);
-    Task UpdateAsync(Product? product);
+    Task AddAsync(Product product);
+    Task UpdateAsync(Product product);
     Task DeleteAsync(int id);
     Task<IEnumerable<Category>> GetAvailableCategoriesAsync();
     Task<IEnumerable<Brand>> GetAvailableBrandsAsync();

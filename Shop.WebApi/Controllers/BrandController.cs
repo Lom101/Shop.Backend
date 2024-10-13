@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Brand.Request;
-using Shop.WebAPI.Services.Interfaces;
+using Shop.WebAPI.Dtos.Brand.Response;
+using Shop.WebAPI.Entities;
+using Shop.WebAPI.Repository.Interfaces;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Shop.WebAPI.Controllers;
 
@@ -8,55 +12,78 @@ namespace Shop.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class BrandController : ControllerBase
 {
-    private readonly IBrandService _brandService;
+    private readonly IBrandRepository _brandRepository;
+    private readonly IMapper _mapper;
 
-    public BrandController(IBrandService brandService)
+    public BrandController(IBrandRepository brandRepository, IMapper mapper)
     {
-        _brandService = brandService;
+        _brandRepository = brandRepository;
+        _mapper = mapper;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllBrands()
     {
-        var brands = await _brandService.GetAllBrandsAsync();
-        return Ok(brands); // Возвращаем BrandDto
+        var brands = await _brandRepository.GetAllAsync();
+        var response = _mapper.Map<IEnumerable<GetBrandResponse>>(brands);
+        return Ok(response);
     }
-    
+
     [HttpGet("{id}")]
     public async Task<IActionResult> GetBrandById(int id)
     {
-        var brand = await _brandService.GetBrandByIdAsync(id);
+        var brand = await _brandRepository.GetByIdAsync(id);
         if (brand == null)
-            return NotFound();
-        return Ok(brand);
+            return NotFound($"Бренд с ID {id} не найден.");
+
+        var response = _mapper.Map<GetBrandResponse>(brand);
+        return Ok(response);
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateBrand(CreateBrandRequest request)
     {
-        var brand = await _brandService.AddBrandAsync(request);
-        return CreatedAtAction(nameof(GetAllBrands), new { id = brand.Id }, brand); // Возвращаем BrandDto
-    }
+        var brand = _mapper.Map<Brand>(request);
+        var success = await _brandRepository.AddAsync(brand);
+        if (!success)
+            return BadRequest("Не удалось создать бренд.");
 
+        var response = _mapper.Map<GetBrandResponse>(brand);
+        return CreatedAtAction(nameof(GetBrandById), new { id = brand.Id }, response);
+    }
+    
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateBrand(int id, UpdateBrandRequest request)
     {
         if (id != request.Id)
-            return BadRequest("brand ID mismatch");
+            return BadRequest("Несоответствие ID бренда.");
 
-        var updatedBrand = await _brandService.UpdateBrandAsync(request);
-        if (updatedBrand == null)
-            return NotFound();
+        var brand = await _brandRepository.GetByIdAsync(id);
+        if (brand == null)
+            return NotFound($"Бренд с ID {id} не найден.");
 
-        return Ok(updatedBrand); // Возвращаем обновленный BrandDto
+        _mapper.Map(request, brand);
+        var success = await _brandRepository.UpdateAsync(brand);
+        if (!success)
+            return BadRequest("Не удалось обновить бренд.");
+        
+        var response = _mapper.Map<GetBrandResponse>(brand);
+        return Ok(response);
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteBrand(int id)
     {
-        var success = await _brandService.DeleteBrandAsync(id);
+        var brand = await _brandRepository.GetByIdAsync(id);
+        if (brand == null)
+            return NotFound($"Бренд с ID {id} не найден.");
+        
+        var success = await _brandRepository.DeleteAsync(id);
         if (!success)
-            return NotFound();
+            return BadRequest("Не удалось удалить бренд.");
 
         return NoContent();
     }

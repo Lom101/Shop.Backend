@@ -19,8 +19,34 @@ public class ColorRepository : IColorRepository
         return await _context.Colors.ToListAsync();
     }
 
-    public async Task<Color> GetByIdAsync(int id)
+    public async Task<Color?> GetByIdAsync(int id)
     {
         return await _context.Colors.FindAsync(id);
+    }
+
+    public async Task<bool> AddAsync(Color color)
+    {
+        await _context.Colors.AddAsync(color);
+        return await SaveChangesAsync();
+    }
+
+    public async Task<bool> UpdateAsync(Color color)
+    {
+        _context.Colors.Update(color);
+        return await SaveChangesAsync();
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var color = await GetByIdAsync(id);
+        if (color == null) return false;
+
+        _context.Colors.Remove(color);
+        return await SaveChangesAsync();
+    }
+
+    private async Task<bool> SaveChangesAsync()
+    {
+        return await _context.SaveChangesAsync() > 0;
     }
 }

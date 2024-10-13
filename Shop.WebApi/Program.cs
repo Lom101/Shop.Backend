@@ -4,19 +4,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Shop.WebAPI.Config;
 using Shop.WebAPI.Data;
-using Shop.WebAPI.Entities;
 using Shop.WebAPI.Infrastructure.Handlers;
 using Shop.WebAPI.Infrastructure.Mappings;
-using Shop.WebAPI.Repositories;
 using Shop.WebAPI.Repository;
 using Shop.WebAPI.Repository.Interfaces;
 using Shop.WebAPI.SeedData;
 using Shop.WebAPI.Services;
 using Shop.WebAPI.Services.Interfaces;
 using Stripe;
-using ProductService = Shop.WebAPI.Services.ProductService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +31,37 @@ builder.Services.AddCors(options =>
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Shop.WebAPI", Version = "v1" });
+
+    // Настройка аутентификации через Bearer JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Введите токен JWT таким образом: Bearer {your token}"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+});
 
 builder.Services.AddDbContext<ShopApplicationContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -68,6 +96,7 @@ builder.Services.AddAuthentication(options =>
     jwt.SaveToken = true;
     jwt.TokenValidationParameters = tokenValidationParams;
 });
+
 builder.Services.AddSingleton(tokenValidationParams);
 
 builder.Services.AddDefaultIdentity<IdentityUser>()
@@ -93,23 +122,15 @@ builder.Services.AddScoped<IJwtService, JwtService>();
 #region Services and repositories
 
 
-builder.Services.AddTransient<ICategoryService, CategoryService>();
-builder.Services.AddTransient<IProductService, ProductService>();
-builder.Services.AddTransient<IAddressService, AddressService>();
-builder.Services.AddTransient<ICommentService, CommentService>();
-builder.Services.AddTransient<IOrderService, OrderService>();
-builder.Services.AddTransient<IBrandService, BrandService>();
-builder.Services.AddTransient<IColorService, ColorService>();
-builder.Services.AddTransient<IModelService, ModelService>();
-builder.Services.AddTransient<ISizeService, SizeService>();
-
 builder.Services.AddTransient<IEmailSender, EmailSender>();
+builder.Services.AddTransient<IJwtService, JwtService>();
+builder.Services.AddTransient<IPhotoService, PhotoService>();
 
-
+builder.Services.AddTransient<IPhotoRepository, PhotoRepository>();
 builder.Services.AddTransient<ICategoryRepository, CategoryRepository>();
 builder.Services.AddTransient<IProductRepository, ProductRepository>();
 builder.Services.AddTransient<IAddressRepository, AddressRepository>();
-builder.Services.AddTransient<ICommentRepository, CommentRepository>();
+builder.Services.AddTransient<IReviewRepository, ReviewRepository>();
 builder.Services.AddTransient<IOrderRepository, OrderRepository>();
 builder.Services.AddTransient<IBrandRepository, BrandRepository>();
 builder.Services.AddTransient<IColorRepository, ColorRepository>();
@@ -131,7 +152,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Включаем использование CORS с политикой "AllowReactApp"
 //app.UseCors("AllowReactApp");
 app.UseCors("AllowAll");
 
@@ -142,20 +162,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-
 app.Run();
-
-// {
-//     "userId": "a19e87ed-dd9f-4953-bf54-a86dd8abf08c",
-//     "status": 1,
-//     "paymentIntentId": "string",
-//     "addressId": 1,
-//     "contactPhone": "string",
-//     "items": [
-//     {
-//         "modelId": 1,
-//         "sizeId": 1,
-//         "quantity": 1
-//     }
-//     ]
-// }

@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Shop.WebAPI.Data;
 using Shop.WebAPI.Entities;
+using Shop.WebAPI.Repository.Interfaces;
+using Shop.WebAPI.Data;
 
-namespace Shop.WebAPI.Repository.Interfaces;
+namespace Shop.WebAPI.Repository;
 
 public class BrandRepository : IBrandRepository
 {
@@ -23,21 +24,27 @@ public class BrandRepository : IBrandRepository
         return await _context.Brands.FindAsync(id);
     }
 
-    public async Task AddAsync(Brand brand)
+    public async Task<bool> AddAsync(Brand brand)
     {
         await _context.Brands.AddAsync(brand);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task UpdateAsync(Brand brand)
+    public async Task<bool> UpdateAsync(Brand brand)
     {
         _context.Brands.Update(brand);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task DeleteAsync(Brand brand)
+    public async Task<bool> DeleteAsync(int id)
     {
+        var brand = await GetByIdAsync(id);
+        if (brand == null)
+        {
+            return false;
+        }
+
         _context.Brands.Remove(brand);
-        await _context.SaveChangesAsync();
+        return await _context.SaveChangesAsync() > 0;
     }
 }

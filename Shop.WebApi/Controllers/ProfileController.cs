@@ -20,7 +20,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize] // Ограничьте доступ только для аутентифицированных пользователей
+    [Authorize]
     public async Task<IActionResult> GetProfile()
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -34,8 +34,7 @@ public class ProfileController : ControllerBase
         var model = new
         {
             UserId = userIdClaim,
-            Email = emailClaim,
-            // Дополнительные клеймы можно добавить сюда
+            Email = emailClaim
         };
         return Ok(model);
     }
