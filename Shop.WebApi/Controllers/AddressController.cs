@@ -6,6 +6,7 @@ using Shop.WebAPI.Repository.Interfaces;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
+using Shop.WebAPI.Entities;
 
 namespace Shop.WebAPI.Controllers;
 
@@ -14,12 +15,12 @@ namespace Shop.WebAPI.Controllers;
 public class AddressController : ControllerBase
 {
     private readonly IAddressRepository _addressRepository;
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly IMapper _mapper;
 
     public AddressController(
         IAddressRepository addressRepository, 
-        UserManager<IdentityUser> userManager, 
+        UserManager<ApplicationUser> userManager, 
         IMapper mapper)
     {
         _addressRepository = addressRepository;
@@ -48,7 +49,7 @@ public class AddressController : ControllerBase
         return Ok(mappedAddresses);
     }
 
-    // GET: api/address/me
+    // GET: api/address/me  
     [HttpGet("me")]
     [Authorize(Roles = "User,Admin")] 
     public async Task<IActionResult> GetMyAddresses()

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -10,6 +12,7 @@ using Shop.WebAPI.Dtos.OrderItem.Responses;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Enums;
 using Shop.WebAPI.Repository;
+using Shop.WebAPI.Repository.Interfaces;
 using Stripe;
 using Stripe.Checkout;
 using Address = Shop.WebAPI.Entities.Address;
@@ -24,15 +27,17 @@ public class OrderController : ControllerBase
     private readonly ShopApplicationContext _context;
     private readonly ILogger<OrderController> _logger;
     private readonly PaymentIntentService _paymentIntentService;
-    private readonly OrderRepository _orderRepository; 
+    private readonly IOrderRepository _orderRepository;
+    private readonly IMapper _mapper;
 
-    public OrderController(ShopApplicationContext context, ILogger<OrderController> logger, OrderRepository orderRepository)
+    public OrderController(ShopApplicationContext context, ILogger<OrderController> logger, IOrderRepository orderRepository, IMapper mapper)
     {
         _context = context;
         _logger = logger;
         StripeConfiguration.ApiKey = "sk_test_51Q53yhKGJp4CXm6iutUKXwzbHDRF4GHNMrfRugSHUauQg2UUbblxgfUtBLDOgpYxwQ1Ijy2SPbbh1AZceJYW2r7g00AIilYc4K";
         _paymentIntentService = new PaymentIntentService();
-        _orderRepository = orderRepository; 
+        _orderRepository = orderRepository;
+        _mapper = mapper;
     }
 
     [HttpPost("create-payment-intent")]
@@ -206,5 +211,24 @@ public class OrderController : ControllerBase
             _logger.LogError(ex, "An error occurred while creating the order.");
             return StatusCode(500, "Internal server error");
         }
+    }
+    
+    // GET: api/orders/me  
+    [HttpGet("me")]
+    [Authorize(Roles = "User,Admin")] 
+    public async Task<IActionResult> GetMyAddresses()
+    {
+            // Получаем UserId из Claims
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized("Пользователь не авторизован.");
+            }
+            
+            // Получаем заказы пользователя
+            var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
+
+            var response = _mapper.Map<IEnumerable<GetOrderResponse>>(orders);
+            return Ok(response);
     }
 }

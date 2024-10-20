@@ -20,8 +20,8 @@ public class JwtService : IJwtService
     private readonly JwtConfig _jwtConfig;
     private readonly ShopApplicationContext _context;
     private readonly TokenValidationParameters _tokenValidationParameters;
-    private readonly UserManager<IdentityUser> _userManager;
-    public JwtService(IOptionsMonitor<JwtConfig> jwtConfig, ShopApplicationContext context, TokenValidationParameters tokenValidationParameters,  UserManager<IdentityUser> userManager)
+    private readonly UserManager<ApplicationUser> _userManager;
+    public JwtService(IOptionsMonitor<JwtConfig> jwtConfig, ShopApplicationContext context, TokenValidationParameters tokenValidationParameters,  UserManager<ApplicationUser> userManager)
     {
         _jwtConfig = jwtConfig.CurrentValue;
         _context = context;
@@ -29,7 +29,7 @@ public class JwtService : IJwtService
         _userManager = userManager;
     }
 
-    public async Task<AuthResult> GenerateToken(IdentityUser user)
+    public async Task<AuthResult> GenerateToken(ApplicationUser user)
     {
         var jwtTokenHandler = new JwtSecurityTokenHandler();
         var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);

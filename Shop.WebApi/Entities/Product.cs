@@ -19,7 +19,7 @@ public class Product
     public ICollection<Review> Comments { get; set; }
     
     // В наличие на складе, если есть хоть одна доступная модель на складе
-    public bool IsAvailable => Models.Any(m => m.IsAvailable == true); 
+    public bool IsAvailable => Models.Any(m => m.IsAvailable); 
     
     public Product()
     {

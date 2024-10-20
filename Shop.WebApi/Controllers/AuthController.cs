@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Auth;
 using Shop.WebAPI.Dtos.Auth.Request;
 using Shop.WebAPI.Dtos.Auth.Response;
+using Shop.WebAPI.Entities;
 using Shop.WebAPI.Services.Interfaces;
 
 namespace Shop.WebAPI.Controllers;
@@ -14,12 +15,12 @@ namespace Shop.WebAPI.Controllers;
 public class AuthController : ControllerBase
 {
     // Identity package
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
     private readonly IJwtService _jwtService;
     private readonly IEmailSender _emailSender;
 
-    public AuthController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IJwtService jwtService, IEmailSender emailSender)
+    public AuthController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IJwtService jwtService, IEmailSender emailSender)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -32,7 +33,7 @@ public class AuthController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            IdentityUser existingUser = await _userManager.FindByEmailAsync(user.Email);
+            ApplicationUser existingUser = await _userManager.FindByEmailAsync(user.Email);
 
             if (existingUser != null)
             {
@@ -43,7 +44,7 @@ public class AuthController : ControllerBase
                 });
             }
 
-            IdentityUser newUser = new IdentityUser()
+            ApplicationUser newUser = new ApplicationUser()
             {
                 Email = user.Email,
                 UserName = user.Username,
@@ -85,7 +86,7 @@ public class AuthController : ControllerBase
     {
         if (ModelState.IsValid)
         {
-            IdentityUser existingUser = await _userManager.FindByEmailAsync(user.Email);
+            ApplicationUser existingUser = await _userManager.FindByEmailAsync(user.Email);
 
             if (existingUser == null)
             {

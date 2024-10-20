@@ -5,7 +5,7 @@ using Shop.WebAPI.Entities;
 
 namespace Shop.WebAPI.Data
 {
-    public class ShopApplicationContext : IdentityDbContext
+    public class ShopApplicationContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Product> Products { get; set; }
         public DbSet<Review> Reviews { get; set; }
@@ -31,6 +31,15 @@ namespace Shop.WebAPI.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd(); 
+            
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Comments)
+                .HasForeignKey(r => r.UserId);
         }
     }
 }

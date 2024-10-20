@@ -3,6 +3,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Shop.WebAPI.Dtos.Review.Requests;
+using Shop.WebAPI.Dtos.Review.Responses;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Repository.Interfaces;
 
@@ -22,9 +23,10 @@ namespace Shop.WebAPI.Controllers
         }
 
         // Получить отзыв по продукту и ID пользователя
-        [HttpGet("{productId}")]
+        // GET api/review?productId={productId}
+        [HttpGet]
         [Authorize]
-        public async Task<ActionResult> GetReviewByProductId(int productId)
+        public async Task<ActionResult> GetReviewByProductId([FromQuery] int productId)
         {
             // Получаем userId из claims
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -47,7 +49,7 @@ namespace Shop.WebAPI.Controllers
         // Добавить новый отзыв
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> CreateReview(CreateReviewRequest request)
+        public async Task<ActionResult> CreateReview([FromBody] CreateReviewRequest request)
         {
             // Проверка на дубликаты
             var existingReview = await _reviewRepository.GetReviewByProductAndUserAsync(request.ProductId, request.UserId);
@@ -66,11 +68,13 @@ namespace Shop.WebAPI.Controllers
         }
 
         // Получить все отзывы
-        [HttpGet]
-        public async Task<IActionResult> GetAllReviews()
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllReviewsByProductId([FromQuery] int productId)
         {
-            var reviews = await _reviewRepository.GetAllReviewsAsync();
-            return Ok(reviews);
+            var reviews = await _reviewRepository.GetAllReviewsByProductIdAsync(productId);
+            
+            var reviewsDtos = _mapper.Map<IEnumerable<GetReviewResponse>>(reviews);
+            return Ok(reviewsDtos);
         }
     }
 }

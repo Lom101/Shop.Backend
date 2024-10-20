@@ -10,7 +10,7 @@ public class ApplicationUser : IdentityUser
     public ICollection<Review> Comments { get; set; }
     public ApplicationUser()
     {
-        Created = DateTime.Now;
+        Created = DateTime.UtcNow;
         Orders = new Collection<Order>();
         Comments = new Collection<Review>();
     }

@@ -13,5 +13,5 @@ public class CreateProductRequest
     public int CategoryId { get; set; }
     public int BrandId { get; set; }
     
-    public ICollection<GetModelResponse> Models { get; set; }
+    //public ICollection<GetModelResponse> Models { get; set; } будем добавлять отдельно
 }

@@ -10,10 +10,10 @@ namespace Shop.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class ProfileController : ControllerBase
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly UserManager<ApplicationUser> _userManager;
     private readonly ILogger<ProfileController> _logger;
 
-    public ProfileController(UserManager<IdentityUser> userManager, ILogger<ProfileController> logger)
+    public ProfileController(UserManager<ApplicationUser> userManager, ILogger<ProfileController> logger)
     {
         _userManager = userManager;
         _logger = logger;

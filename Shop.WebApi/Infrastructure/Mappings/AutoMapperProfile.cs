@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Shop.WebAPI.Dtos.Address.Requests;
 using Shop.WebAPI.Dtos.Address.Responses;
 using Shop.WebAPI.Dtos.Brand.Response;
@@ -12,7 +13,9 @@ using Shop.WebAPI.Dtos.Order.Responses;
 using Shop.WebAPI.Dtos.OrderItem;
 using Shop.WebAPI.Dtos.OrderItem.Responses;
 using Shop.WebAPI.Dtos.Photo.Responses;
+using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
+using Shop.WebAPI.Dtos.Review.Requests;
 using Shop.WebAPI.Dtos.Review.Responses;
 using Shop.WebAPI.Dtos.Size.Responses;
 using Shop.WebAPI.Dtos.User.Responses;
@@ -153,10 +156,16 @@ public class AutoMapperProfile : Profile
         CreateMap<Category, GetCategoryResponse>();
         CreateMap<CreateCategoryRequest, Category>()
             .ForMember(pr => pr.Id, opt => opt.Ignore());
+        CreateMap<UpdateCategoryRequest, Category>();
         #endregion
 
         #region Review
         CreateMap<Review, GetReviewResponse>();
+        CreateMap<CreateReviewRequest, Review>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Created, opt => opt.Ignore())
+            .ForMember(dest => dest.Product, opt => opt.Ignore())
+            .ForMember(dest => dest.User, opt => opt.Ignore());
         #endregion
 
         #region Product
@@ -168,10 +177,19 @@ public class AutoMapperProfile : Profile
             .ForMember(dest => dest.CommentsCount, opt => opt.MapFrom(src => src.Comments.Count)) // Количество комментариев
             .ForMember(dest => dest.IsAvailable, opt 
                 => opt.MapFrom(src => src.IsAvailable));
+        CreateMap<CreateProductRequest, Product>()
+            .ForMember(opt => opt.Id, dest => dest.Ignore())
+            .ForMember(opt => opt.Category, dest => dest.Ignore())
+            .ForMember(opt => opt.Brand, dest => dest.Ignore())
+            .ForMember(opt => opt.Models, dest => dest.Ignore())
+            .ForMember(opt => opt.Comments, dest => dest.Ignore());
+        
         #endregion
 
         #region User
         CreateMap<ApplicationUser, GetApplicationUserResponse>();
+        //CreateMap<IdentityUser, GetApplicationUserResponse>(); // неизвестно нужно ли 
+
         #endregion
     }
 }

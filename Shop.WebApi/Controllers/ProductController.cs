@@ -1,7 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Shop.WebAPI.Dtos.Brand.Response;
+using Shop.WebAPI.Dtos.Category.Responses;
+using Shop.WebAPI.Dtos.Color.Responses;
 using Shop.WebAPI.Dtos.Product.Requests;
 using Shop.WebAPI.Dtos.Product.Responses;
+using Shop.WebAPI.Dtos.Size.Responses;
 using Shop.WebAPI.Entities;
 using Shop.WebAPI.Repository.Interfaces;
 
@@ -52,8 +56,10 @@ public class ProductController : ControllerBase
             .Skip((int)((pageNumber - 1) * pageSize))
             .Take((int)pageSize)
             .ToList();
+        
+        var filteredPagedProductDtos = _mapper.Map<List<GetProductResponse>>(filteredPagedProducts);
 
-        return Ok(new { Items = filteredPagedProducts, TotalCount = totalCount });
+        return Ok(new { Items = filteredPagedProductDtos, TotalCount = totalCount });
     }
 
     // Возвращаем все необходимые опции продукта (размеры, цвета и т.д.)
@@ -70,10 +76,10 @@ public class ProductController : ControllerBase
 
         return Ok(new
         {
-            Categories = categories,
-            Brands = brands,
-            Sizes = sizes,
-            Colors = colors,
+            Categories = _mapper.Map<List<GetCategoryResponse>>(categories),
+            Brands = _mapper.Map<List<GetBrandResponse>>(brands),
+            Sizes = _mapper.Map<List<GetSizeResponse>>(sizes),
+            Colors = _mapper.Map<List<GetColorResponse>>(colors),
             MinPrice = minPrice,
             MaxPrice = maxPrice
         });

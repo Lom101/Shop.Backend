@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Shop.WebAPI.Config;
 using Shop.WebAPI.Data;
+using Shop.WebAPI.Entities;
 using Shop.WebAPI.Infrastructure.Handlers;
 using Shop.WebAPI.Infrastructure.Mappings;
 using Shop.WebAPI.Repository;
@@ -18,15 +19,18 @@ using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Добавление CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", builder =>
-    {
-        builder.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader();
-    });
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin() // Разрешает любой источник
+                .AllowAnyMethod() // Разрешает любой метод (GET, POST и т. д.)
+                .AllowAnyHeader(); // Разрешает любые заголовки
+        });
 });
+
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -101,7 +105,7 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddSingleton(tokenValidationParams);
 
-builder.Services.AddDefaultIdentity<IdentityUser>()
+builder.Services.AddDefaultIdentity<ApplicationUser>()
     .AddRoles<IdentityRole>() // Add roles support
     .AddEntityFrameworkStores<ShopApplicationContext>();
 

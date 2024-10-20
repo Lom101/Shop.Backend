@@ -14,7 +14,7 @@ namespace Shop.Tests.Controllers;
 public class AddressControllerTests
 {
     private readonly Mock<IAddressRepository> _addressRepositoryMock;
-    private readonly Mock<UserManager<IdentityUser>> _userManagerMock;
+    private readonly Mock<UserManager<ApplicationUser>> _userManagerMock;
     private readonly Mock<IMapper> _mapperMock;
     private readonly AddressController _controller;
 
@@ -22,8 +22,8 @@ public class AddressControllerTests
     {
         _addressRepositoryMock = new Mock<IAddressRepository>();
         _mapperMock = new Mock<IMapper>();
-        _userManagerMock = new Mock<UserManager<IdentityUser>>(
-            Mock.Of<IUserStore<IdentityUser>>(), null, null, null, null, null, null, null, null);
+        _userManagerMock = new Mock<UserManager<ApplicationUser>>(
+            Mock.Of<IUserStore<ApplicationUser>>(), null, null, null, null, null, null, null, null);
 
         _controller = new AddressController(
             _addressRepositoryMock.Object, 

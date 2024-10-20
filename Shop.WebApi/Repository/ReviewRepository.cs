@@ -26,9 +26,14 @@ public class ReviewRepository : IReviewRepository
         await SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<Review>> GetAllReviewsAsync()
+    public async Task<IEnumerable<Review>> GetAllReviewsByProductIdAsync(int productId)
     {
-        return await _context.Reviews.ToListAsync();
+        var reviews = await _context.Reviews
+            //.Include(r => r.User) // с этим не работает
+            .Where(r => r.ProductId == productId)
+            .ToListAsync();
+
+        return reviews;
     }
 
     public async Task SaveChangesAsync()

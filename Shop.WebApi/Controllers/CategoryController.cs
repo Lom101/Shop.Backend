@@ -67,8 +67,6 @@ namespace Shop.WebAPI.Controllers
             return CreatedAtAction(nameof(GetCategoryById), new { id = newCategory.Id }, response);
         }
 
-
-
         // PUT: api/category/{id}
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]

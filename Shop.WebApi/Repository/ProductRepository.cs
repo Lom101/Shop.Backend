@@ -16,7 +16,7 @@ public class ProductRepository : IProductRepository
         _context = context;
     }
 
-    public async Task<Product?> GetByIdAsync(int id)
+    public async Task<Product> GetByIdAsync(int id)
     {
         return await _context.Products
             .Include(p => p.Category)
@@ -86,13 +86,13 @@ public class ProductRepository : IProductRepository
         return await query.ToListAsync();
     }
 
-    public async Task AddAsync(Product? product)
+    public async Task AddAsync(Product product)
     {
         await _context.Products.AddAsync(product);
         await _context.SaveChangesAsync();
     }
 
-    public async Task UpdateAsync(Product? product)
+    public async Task UpdateAsync(Product product)
     {
         _context.Products.Update(product);
         await _context.SaveChangesAsync();
@@ -108,7 +108,7 @@ public class ProductRepository : IProductRepository
         }
     }
 
-    public async Task<IEnumerable<Category?>> GetAvailableCategoriesAsync()
+    public async Task<IEnumerable<Category>> GetAvailableCategoriesAsync()
     {
         return await _context.Categories.ToListAsync();
     }
