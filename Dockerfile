@@ -10,7 +10,7 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Копируем файл решения и файлы проектов
-COPY ["Shop.WebAPI/Shop.WebAPI.csproj", "Shop.WebAPI/"]
+COPY ["Shop.WebApi/Shop.WebAPI.csproj", "Shop.WebAPI/"]
 COPY ["Shop.Tests/Shop.Tests.csproj", "Shop.Tests/"]
 
 # Восстанавливаем зависимости
