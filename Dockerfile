@@ -27,7 +27,7 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 
-EXPOSE 5000
+EXPOSE 80
 EXPOSE 443
 EXPOSE 5432
 
