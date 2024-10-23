@@ -34,7 +34,6 @@ public class OrderController : ControllerBase
     {
         _context = context;
         _logger = logger;
-        StripeConfiguration.ApiKey = "sk_test_51Q53yhKGJp4CXm6iutUKXwzbHDRF4GHNMrfRugSHUauQg2UUbblxgfUtBLDOgpYxwQ1Ijy2SPbbh1AZceJYW2r7g00AIilYc4K";
         _paymentIntentService = new PaymentIntentService();
         _orderRepository = orderRepository;
         _mapper = mapper;
