@@ -25,8 +25,9 @@ public class ProfileController : ControllerBase
     {
         var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         var emailClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+        var usernameClaim = User.Claims.FirstOrDefault(c => c.Type == "Username")?.Value; // Извлечение username
 
-        if (userIdClaim == null || emailClaim == null)
+        if (userIdClaim == null || emailClaim == null || usernameClaim == null)
         {
             return NotFound("User claims not found");
         }
@@ -34,8 +35,11 @@ public class ProfileController : ControllerBase
         var model = new
         {
             UserId = userIdClaim,
-            Email = emailClaim
+            Email = emailClaim,
+            Username = usernameClaim
         };
+
         return Ok(model);
     }
+
 }

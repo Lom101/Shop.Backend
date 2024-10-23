@@ -40,6 +40,7 @@ public class JwtService : IJwtService
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id), // Стандартный claim для идентификатора
             new Claim("Id", user.Id), // Кастомный claim для дополнительного хранения
+            new Claim("Username", user.UserName), // Добавляем имя пользователя в клеймы
             new Claim(JwtRegisteredClaimNames.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Sub, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())

@@ -1,6 +1,9 @@
 # Ignore JetBrains Rider temporary files
 .idea/
 
+# Ignore .env files
+.env
+
 # Ignore user-specific IDE settings
 .idea/workspace.xml
 .idea/.ideaenv
