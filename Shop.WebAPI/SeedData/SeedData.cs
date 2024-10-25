@@ -321,8 +321,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "air_max_1_black.jpg",
-                        FilePath = "/images/air_max_1_black.jpg",
+                        FileName = "air_max_1_black.webp",
+                        FilePath = "/images/air_max_1_black.webp",
                         Length = 2048
                     }
                 }
@@ -336,8 +336,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "air_max_1_white.jpg",
-                        FilePath = "/images/air_max_1_white.jpg",
+                        FileName = "air_max_1_white.webp",
+                        FilePath = "/images/air_max_1_white.webp",
                         Length = 2048
                     }
                 }
@@ -353,8 +353,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "gel_nyc_grey.jpg",
-                        FilePath = "/images/gel_nyc_grey.jpg",
+                        FileName = "gel_nyc_grey.webp",
+                        FilePath = "/images/gel_nyc_grey.webp",
                         Length = 2048
                     }
                 }
@@ -368,8 +368,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "gel_nyc_black.jpg",
-                        FilePath = "/images/gel_nyc_black.jpg",
+                        FileName = "gel_nyc_black.webp",
+                        FilePath = "/images/gel_nyc_black.webp",
                         Length = 2048
                     }
                 }
@@ -385,8 +385,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "puma_caven_2_0_black.jpg",
-                        FilePath = "/images/puma_caven_2_0_black.jpg",
+                        FileName = "puma_caven_2_0_black.webp",
+                        FilePath = "/images/puma_caven_2_0_black.webp",
                         Length = 2048
                     }
                 }
@@ -400,8 +400,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "puma_caven_2_0_white.jpg",
-                        FilePath = "/images/puma_caven_2_0_white.jpg",
+                        FileName = "puma_caven_2_0_white.webp",
+                        FilePath = "/images/puma_caven_2_0_white.webp",
                         Length = 2048
                     }
                 }
@@ -417,8 +417,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "reebok_classic_black.jpg",
-                        FilePath = "/images/reebok_classic_black.jpg",
+                        FileName = "reebok_classic_black.webp",
+                        FilePath = "/images/reebok_classic_black.webp",
                         Length = 2048
                     }
                 }
@@ -432,8 +432,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "reebok_classic_white.jpg",
-                        FilePath = "/images/reebok_classic_white.jpg",
+                        FileName = "reebok_classic_white.webp",
+                        FilePath = "/images/reebok_classic_white.webp",
                         Length = 2048
                     }
                 }
@@ -449,8 +449,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "new_balance_574_white.jpg",
-                        FilePath = "/images/new_balance_574_white.jpg",
+                        FileName = "new_balance_574_white.webp",
+                        FilePath = "/images/new_balance_574_white.webp",
                         Length = 2048
                     }
                 }
@@ -464,8 +464,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "new_balance_574_black.jpg",
-                        FilePath = "/images/new_balance_574_black.jpg",
+                        FileName = "new_balance_574_black.webp",
+                        FilePath = "/images/new_balance_574_black.webp",
                         Length = 2048
                     }
                 }
@@ -479,8 +479,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "new_balance_574_grey.jpg",
-                        FilePath = "/images/new_balance_574_grey.jpg",
+                        FileName = "new_balance_574_grey.webp",
+                        FilePath = "/images/new_balance_574_grey.webp",
                         Length = 2048
                     }
                 }
@@ -496,8 +496,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "air_force_1_07_black.jpg",
-                        FilePath = "/images/air_force_1_07_black.jpg",
+                        FileName = "air_force_1_07_black.webp",
+                        FilePath = "/images/air_force_1_07_black.webp",
                         Length = 2048
                     }
                 }
@@ -511,8 +511,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "air_force_1_07_green.jpg",
-                        FilePath = "/images/air_force_1_07_green.jpg",
+                        FileName = "air_force_1_07_green.webp",
+                        FilePath = "/images/air_force_1_07_green.webp",
                         Length = 2048
                     }
                 }
@@ -526,8 +526,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "air_force_1_07_white.jpg",
-                        FilePath = "/images/air_force_1_07_white.jpg",
+                        FileName = "air_force_1_07_white.webp",
+                        FilePath = "/images/air_force_1_07_white.webp",
                         Length = 2048
                     }
                 }
@@ -543,8 +543,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "adidas_samba_og_blue.jpg",
-                        FilePath = "/images/adidas_samba_og_blue.jpg",
+                        FileName = "adidas_samba_og_blue.webp",
+                        FilePath = "/images/adidas_samba_og_blue.webp",
                         Length = 2048
                     }
                 }
@@ -558,8 +558,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "adidas_samba_og_green.jpg",
-                        FilePath = "/images/adidas_samba_og_green.jpg",
+                        FileName = "adidas_samba_og_green.webp",
+                        FilePath = "/images/adidas_samba_og_green.webp",
                         Length = 2048
                     }
                 }
@@ -575,8 +575,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "puma_suede_xl_green.jpg",
-                        FilePath = "/images/puma_suede_xl_green.jpg",
+                        FileName = "puma_suede_xl_green.webp",
+                        FilePath = "/images/puma_suede_xl_green.webp",
                         Length = 2048
                     }
                 }
@@ -590,8 +590,8 @@ public class SeedData
                 {
                     new Photo
                     {
-                        FileName = "puma_suede_xl_white.jpg",
-                        FilePath = "/images/puma_suede_xl_white.jpg",
+                        FileName = "puma_suede_xl_white.webp",
+                        FilePath = "/images/puma_suede_xl_white.webp",
                         Length = 2048
                     }
                 }
@@ -607,8 +607,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "hoka_bondi_7_white.jpg",
-            //             FilePath = "/images/hoka_bondi_7_white.jpg",
+            //             FileName = "hoka_bondi_7_white.webp",
+            //             FilePath = "/images/hoka_bondi_7_white.webp",
             //             Length = 2048
             //         }
             //     }
@@ -622,8 +622,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "hoka_bondi_7_black.jpg",
-            //             FilePath = "/images/hoka_bondi_7_black.jpg",
+            //             FileName = "hoka_bondi_7_black.webp",
+            //             FilePath = "/images/hoka_bondi_7_black.webp",
             //             Length = 2048
             //         }
             //     }
@@ -637,8 +637,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "asics_gel_kayano_blue.jpg",
-            //             FilePath = "/images/asics_gel_kayano_blue.jpg",
+            //             FileName = "asics_gel_kayano_blue.webp",
+            //             FilePath = "/images/asics_gel_kayano_blue.webp",
             //             Length = 2048
             //         }
             //     }
@@ -652,8 +652,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "asics_gel_kayano_red.jpg",
-            //             FilePath = "/images/asics_gel_kayano_red.jpg",
+            //             FileName = "asics_gel_kayano_red.webp",
+            //             FilePath = "/images/asics_gel_kayano_red.webp",
             //             Length = 2048
             //         }
             //     }
@@ -667,8 +667,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "mizuno_wave_rider_white.jpg",
-            //             FilePath = "/images/mizuno_wave_rider_white.jpg",
+            //             FileName = "mizuno_wave_rider_white.webp",
+            //             FilePath = "/images/mizuno_wave_rider_white.webp",
             //             Length = 2048
             //         }
             //     }
@@ -682,8 +682,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "saucony_triumph_black.jpg",
-            //             FilePath = "/images/saucony_triumph_black.jpg",
+            //             FileName = "saucony_triumph_black.webp",
+            //             FilePath = "/images/saucony_triumph_black.webp",
             //             Length = 2048
             //         }
             //     }
@@ -697,8 +697,8 @@ public class SeedData
             //     {
             //         new Photo
             //         {
-            //             FileName = "saucony_triumph_white.jpg",
-            //             FilePath = "/images/saucony_triumph_white.jpg",
+            //             FileName = "saucony_triumph_white.webp",
+            //             FilePath = "/images/saucony_triumph_white.webp",
             //             Length = 2048
             //         }
             //     }
@@ -879,15 +879,15 @@ public class SeedData
         //     context.Photos.AddRange(
         //         new Photo
         //         {
-        //             FileName = "photo1.jpg",
-        //             FilePath = "/images/photo1.jpg",
+        //             FileName = "photo1.webp",
+        //             FilePath = "/images/photo1.webp",
         //             Length = 2048,
         //             ModelId = 1
         //         },
         //         new Photo
         //         {
-        //             FileName = "photo2.jpg",
-        //             FilePath = "/images/photo2.jpg",
+        //             FileName = "photo2.webp",
+        //             FilePath = "/images/photo2.webp",
         //             Length = 1024,
         //             ModelId = 2
         //         }
