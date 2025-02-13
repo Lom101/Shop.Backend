@@ -19,7 +19,7 @@ Shop.Backend — это серверная часть приложения дл�
 
 ## Требования
 
-- [.NET 7](https://dotnet.microsoft.com/download)
+- [.NET 8](https://dotnet.microsoft.com/download)
 - [PostgreSQL](https://www.postgresql.org/download/)
 - [Stripe Account](https://stripe.com/) для получения `SecretKey` и `PublishableKey`
 
