@@ -18,6 +18,7 @@ public class SeedData
 
             try
             {
+                await context.Database.EnsureDeletedAsync();
                 // Применение миграций
                 await context.Database.MigrateAsync();
 
@@ -96,15 +97,15 @@ public class SeedData
             context.Categories.AddRange(
                 new Category
                 {
-                    Name = "Women's"
+                    Name = "Женское"
                 },
                 new Category
                 {
-                    Name = "Men's"
+                    Name = "Мужское"
                 },
                 new Category
                 {
-                    Name = "Children's"
+                    Name = "Дети"
                 }
             );
             await context.SaveChangesAsync();
@@ -152,16 +153,16 @@ public class SeedData
         if (!context.Colors.Any())
         {
             context.Colors.AddRange(
-                new Color { Name = "Red" },
-                new Color { Name = "Blue" },
-                new Color { Name = "Green" },
-                new Color { Name = "Black" },
-                new Color { Name = "White" },
-                new Color { Name = "Yellow" },
-                new Color { Name = "Orange" },
-                new Color { Name = "Purple" },
-                new Color { Name = "Pink" },
-                new Color { Name = "Gray" }
+                new Color { Name = "Красный" },
+                new Color { Name = "Синий" },
+                new Color { Name = "Зеленый" },
+                new Color { Name = "Черный" },
+                new Color { Name = "Белый" },
+                new Color { Name = "Желтый" },
+                new Color { Name = "Оранжевый" },
+                new Color { Name = "Пурпурный" },
+                new Color { Name = "Розовый" },
+                new Color { Name = "Серый" }
             );
 
             await context.SaveChangesAsync();
